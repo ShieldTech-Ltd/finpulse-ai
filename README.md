@@ -33,34 +33,28 @@
 
 ```mermaid
 flowchart TD
-    %% Custom Styling
-    classDef userLayer fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef coreEngine fill:#0f172a,stroke:#06b6d4,stroke-width:2px,color:#fff;
-    classDef complianceLayer fill:#2e1065,stroke:#a855f7,stroke-width:2px,color:#fff;
-    classDef outputLayer fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
-
-    subgraph Input Channel
-        A[Social Video / Script / Post] ::: userLayer
-        B[UK Payslip / Salary Terms] ::: userLayer
-        C[Investment Strategy Choice] ::: userLayer
+    subgraph "Input Vectors"
+        A["Social Video / Script / Post"]
+        B["UK Payslip / Salary Terms"]
+        C["Investment Strategy Choice"]
     end
 
-    subgraph FinPulse AI Core Engine
-        D{AI Multi-Platform Finfluencer Auditor} ::: coreEngine
-        E[UK Tax & HMRC Math Pipeline] ::: coreEngine
-        F[5-Year Compound Risk & Shock Simulator] ::: coreEngine
+    subgraph "FinPulse AI Core Engine"
+        D["AI Multi-Platform Finfluencer Auditor"]
+        E["UK Tax & HMRC Math Pipeline"]
+        F["5-Year Compound Risk & Shock Simulator"]
     end
 
-    subgraph Enterprise & Compliance Layer
-        G[FCA Consumer Duty Audit Log] ::: complianceLayer
-        H[Gen Z Workplace Wellbeing Telemetry] ::: complianceLayer
+    subgraph "Enterprise & Compliance Layer"
+        G["FCA Consumer Duty Audit Log"]
+        H["Gen Z Workplace Wellbeing Telemetry"]
     end
 
-    subgraph User & Sponsor Outcomes
-        I[Risk Scorecard & Plain-Truth Audit] ::: outputLayer
-        J[Net Take-Home Pay & Pension Top-Up] ::: outputLayer
-        K[Visceral Crash Risk Awareness] ::: outputLayer
-        L[Verified Financial Literacy Graduate] ::: outputLayer
+    subgraph "User & Sponsor Outcomes"
+        I["Risk Scorecard & Plain-Truth Audit"]
+        J["Net Take-Home Pay & Pension Top-Up"]
+        K["Visceral Crash Risk Awareness"]
+        L["Verified Financial Literacy Graduate"]
     end
 
     A --> D
@@ -71,9 +65,9 @@ flowchart TD
     E --> J
     F --> K
 
-    D -.->|Telemetry| G
-    E -.->|Telemetry| H
-    F -.->|Telemetry| G
+    D -.-> G
+    E -.-> H
+    F -.-> G
 
     I --> L
     J --> L
@@ -87,7 +81,7 @@ sequenceDiagram
     autonumber
     actor GenZUser as Gen Z User (15-25)
     participant Platform as FinPulse AI Engine
-    participant HMRC as UK Tax Rules API
+    participant HMRC as UK Tax Rules Engine
     participant Bank as Partner Bank Portal (NatWest/Barclays)
 
     GenZUser->>Platform: Uploads TikTok/IG Finfluencer Claim
@@ -125,8 +119,6 @@ sequenceDiagram
   - Student Loan Repayment Plans: Plan 1, Plan 2 (£27,295 threshold), Plan 5 (£25,000 threshold), Postgrad.
 
 ### 3. "Investors, Not Gamblers" Compound Growth Engine
-* **Mathematical Model**: Monthly compounding annuity formula:
-  $$\text{FV} = P \times \frac{(1 + r)^n - 1}{r}$$
 * **Market Shock Testing**: Simulates historical drawdowns (e.g. 2008 Financial Crash, 2020 Pandemic Panic) to test user emotional resilience *before* real money is invested.
 
 ### 4. FCA Consumer Duty Enterprise Dashboard
@@ -142,14 +134,14 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    subgraph Corporate Payers
-        B1[UK Retail Banks] -->|FCA Consumer Duty Budget: £50k-£250k/yr| Platform[FinPulse AI Platform]
-        B2[Enterprise Employers] -->|Gen Z Staff Perk: £5/seat/mo| Platform
-        B3[Parents of Teens] -->|Family Sub: £3.99/mo| Platform
+    subgraph "Institutional Payers"
+        B1["UK Retail Banks"] -->|FCA Consumer Duty Budget: £50k-£250k/yr| Platform["FinPulse AI Platform"]
+        B2["Enterprise Employers"] -->|Gen Z Staff Perk: £5/seat/mo| Platform
+        B3["Parents of Teens"] -->|Family Sub: £3.99/mo| Platform
     end
 
-    Platform -->|100% Free Access| User[Gen Z User 15-25]
-    Platform -->|Graduation Lead Referral: £25-£75/lead| Partner[Regulated ISA & Savings Partners]
+    Platform -->|100% Free Access| User["Gen Z User 15-25"]
+    Platform -->|Graduation Lead Referral: £25-£75/lead| Partner["Regulated ISA & Savings Partners"]
 ```
 
 ### Revenue Breakdown:
