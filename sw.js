@@ -2,16 +2,13 @@
    FinPulse AI — Progressive Web App (PWA) ServiceWorker
    ========================================================================== */
 
-const CACHE_NAME = 'finpulse-ai-v1';
+const CACHE_NAME = 'finpulse-ai-v2';
 const ASSETS_TO_CACHE = [
     './',
-    './index.html',
     './style.css',
     './app.js',
     './manifest.json',
-    './animated_architecture.svg',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap'
+    './animated_architecture.svg'
 ];
 
 // Install Event — Cache Core App Shell & Offline Engine
@@ -66,7 +63,7 @@ self.addEventListener('fetch', (event) => {
                         return cachedResponse;
                     }
                     if (event.request.headers.get('accept').includes('text/html')) {
-                        return caches.match('./index.html');
+                        return caches.match('./');
                     }
                 });
             })
