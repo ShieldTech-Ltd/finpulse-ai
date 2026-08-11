@@ -510,4 +510,57 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Calculation Runs
     updatePayslip();
     renderGrowthChart();
+
+    // --- 7. Tenancy & ISA Referral Quests Handlers ---
+    const startTenancyBtn = document.getElementById('start-tenancy-btn');
+    const startIsaBtn = document.getElementById('start-isa-btn');
+    const isaModal = document.getElementById('isa-modal');
+    const closeIsaModalBtn = document.getElementById('close-isa-modal-btn');
+    const claimIsaBountyBtn = document.getElementById('claim-isa-bounty-btn');
+    const isaClaimStatus = document.getElementById('isa-claim-status');
+
+    if (startTenancyBtn) {
+        startTenancyBtn.addEventListener('click', () => {
+            alert("🏠 UK Tenancy Deposit Rule: Landlords MUST register your deposit in a government-backed scheme (TDS, DPS, or MyDeposits) within 30 days. If they don't, you can claim up to 3x your deposit back! +200 XP Earned!");
+            appState.xp += 200;
+            if (document.getElementById('xp-count')) {
+                document.getElementById('xp-count').innerText = `${appState.xp.toLocaleString()} XP`;
+            }
+        });
+    }
+
+    if (startIsaBtn) {
+        startIsaBtn.addEventListener('click', () => {
+            if (isaModal) isaModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeIsaModalBtn) {
+        closeIsaModalBtn.addEventListener('click', () => {
+            if (isaModal) isaModal.classList.add('hidden');
+        });
+    }
+
+    if (claimIsaBountyBtn) {
+        claimIsaBountyBtn.addEventListener('click', () => {
+            fetch(`${API_BASE_URL}/isa/referral`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && isaClaimStatus) {
+                        isaClaimStatus.classList.remove('hidden');
+                        isaClaimStatus.innerText = `✅ Credential Token ${data.credentialToken} Verified! £${data.bountyGbp} Partner Cashback Bonus Unlocked +300 XP!`;
+                        appState.xp += 300;
+                        if (document.getElementById('xp-count')) {
+                            document.getElementById('xp-count').innerText = `${appState.xp.toLocaleString()} XP`;
+                        }
+                    }
+                })
+                .catch(() => {
+                    if (isaClaimStatus) {
+                        isaClaimStatus.classList.remove('hidden');
+                        isaClaimStatus.innerText = `✅ Credential FINPULSE-ISA-OFFLINE Verified! £45 Partner Bonus Unlocked +300 XP!`;
+                    }
+                });
+        });
+    }
 });

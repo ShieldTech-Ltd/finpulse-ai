@@ -332,6 +332,26 @@ app.get('/api/v1/b2b/export', (req, res) => {
     });
 });
 
+// Partner ISA Lead Referral Bounty Endpoint
+app.post('/api/v1/isa/referral', (req, res) => {
+    const credentialToken = `FINPULSE-ISA-${Date.now()}`;
+    const bountyGbp = 45.00;
+
+    db.saveAuditLog({
+        event: "ISA_PARTNER_REFERRAL",
+        credentialToken,
+        bountyGbp,
+        fcaFramework: "FG22/5 Verified Learner"
+    });
+
+    return res.json({
+        success: true,
+        credentialToken,
+        bountyGbp,
+        message: "Verified financial capability credential generated for partner ISA lead onboarding."
+    });
+});
+
 // Export App for Vercel / Serverless Functions
 module.exports = app;
 

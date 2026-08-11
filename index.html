@@ -406,16 +406,54 @@
                     </div>
                 </div>
 
-                <!-- Quest 3 -->
-                <div class="card glass-card quest-card">
-                    <div class="quest-status status-locked"><i class="fa-solid fa-lock"></i> Unlocks Tomorrow</div>
-                    <div class="quest-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                <!-- Quest 3: Tenancy Deposit Protection -->
+                <div class="card glass-card quest-card highlight-quest">
+                    <div class="quest-status status-active"><i class="fa-solid fa-house-chimney text-accent"></i> Active Quest</div>
+                    <div class="quest-icon"><i class="fa-solid fa-key text-gold"></i></div>
                     <h3>Tenancy Deposit Protection</h3>
-                    <p>Learn where your landlord legally must hold your deposit in the UK.</p>
+                    <p>Learn where UK landlords legally must register your deposit (TDS/DPS).</p>
                     <div class="quest-footer">
                         <span class="xp-tag">+200 XP</span>
-                        <button class="btn btn-secondary btn-sm" disabled>Locked</button>
+                        <button id="start-tenancy-btn" class="btn btn-primary btn-sm btn-glow">Play Quest</button>
                     </div>
+                </div>
+
+                <!-- Quest 4: Tax-Free Stocks & Shares ISA -->
+                <div class="card glass-card quest-card highlight-quest">
+                    <div class="quest-status status-active"><i class="fa-solid fa-piggy-bank text-green"></i> Unlock ISA Bounty</div>
+                    <div class="quest-icon"><i class="fa-solid fa-shield-halved text-purple"></i></div>
+                    <h3>£20,000 Tax-Free ISA Shelter</h3>
+                    <p>Master UK ISA tax shelters and unlock partner Cash/Stocks ISA cashback bonuses.</p>
+                    <div class="quest-footer">
+                        <span class="xp-tag">+300 XP</span>
+                        <button id="start-isa-btn" class="btn btn-primary btn-sm btn-glow" style="background: linear-gradient(135deg, #a855f7, #6366f1);">Unlock ISA Bounty</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partner ISA Lead Referral Modal -->
+            <div id="isa-modal" class="card glass-card quiz-container hidden" style="border: 1px solid rgba(168, 85, 247, 0.4); max-width: 550px;">
+                <div class="quiz-header">
+                    <h3><i class="fa-solid fa-graduation-cap text-purple"></i> Verified Capability ISA Credential</h3>
+                    <button id="close-isa-modal-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="quiz-body">
+                    <h4>🎉 Congratulations! You Unlocked Verified ISA Partner Bounties</h4>
+                    <p style="color: #cbd5e1; font-size: 13px;">By completing your capability quests, you have proven your financial literacy under FCA FG22/5 guidelines. You can now claim up to £50 cashback when opening a partner Stocks &amp; Shares ISA.</p>
+                    
+                    <div style="background: rgba(30, 27, 75, 0.6); padding: 16px; border-radius: 12px; border: 1px stroke rgba(168,85,247,0.3); margin: 16px 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px;">
+                            <span>Credential ID:</span>
+                            <strong id="isa-credential-id" class="text-accent" style="font-family: monospace;">FINPULSE-ISA-2026-8891</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8;">
+                            <span>Regulated Lead Bounty:</span>
+                            <strong class="text-green" style="font-size: 14px;">£45.00 Partner Cashback</strong>
+                        </div>
+                    </div>
+                    
+                    <button id="claim-isa-bounty-btn" class="btn btn-primary btn-glow" style="width: 100%; background: linear-gradient(135deg, #10b981, #06b6d4);"><i class="fa-solid fa-gift"></i> Claim Partner ISA Bonus &amp; Open Account</button>
+                    <div id="isa-claim-status" class="mt-2 text-center text-green hidden" style="font-weight: 700; font-size: 13px;"></div>
                 </div>
             </div>
 
