@@ -164,6 +164,87 @@ app.post('/api/v1/scan', (req, res) => {
     });
 });
 
+// Guided pre-decision rehearsal used by the 90-second hackathon demo.
+// It examines missing context and consequences without recommending a transaction.
+app.post('/api/v1/rehearsal', (req, res) => {
+    const claimText = String(req.body.claimText || '').trim();
+    const amount = numberInRange(req.body.amount, 1, 100_000);
+    const reason = String(req.body.reason || '').trim();
+    if (claimText.length < 3 || claimText.length > 5000 || amount === null || reason.length < 3 || reason.length > 240) {
+        return res.status(400).json({ error: 'Provide claim text, an amount between 1 and 100,000, and a short reason.' });
+    }
+
+    const lower = claimText.toLowerCase();
+    const leverageMatch = lower.match(/(\d{1,3})x\s*(?:leverage|forex|returns?)/);
+    const leverage = leverageMatch ? Math.min(Number(leverageMatch[1]), 100) : (lower.includes('leverage') ? 50 : null);
+    const guaranteed = /guaranteed|zero risk|free money|can(?:not|'t) lose/.test(lower);
+    const urgency = /buy now|today only|limited|dm me|quit your|before it/.test(lower);
+
+    const indicators = [];
+    if (leverage) indicators.push(`Leverage is mentioned (${leverage}x), which can amplify losses as well as gains.`);
+    if (guaranteed) indicators.push('The promotion uses certainty language that is not evidence of a return.');
+    if (urgency) indicators.push('Urgency or social pressure may be reducing the time available to verify the claim.');
+    if (indicators.length === 0) indicators.push('No common high-risk phrase was detected; that does not establish that the promotion is safe.');
+
+    const adverseMove = leverage ? Math.max(1, Math.ceil(100 / leverage)) : 25;
+    const lossAmount = leverage ? amount : Math.round(amount * 0.25);
+    const scenario = leverage
+        ? `At ${leverage}x leverage, an adverse move of roughly ${adverseMove}% could put the full £${amount.toLocaleString('en-GB')} at risk, before fees and platform rules.`
+        : `A hypothetical 25% fall would reduce £${amount.toLocaleString('en-GB')} by about £${lossAmount.toLocaleString('en-GB')}. This is a learning scenario, not a forecast.`;
+
+    const rehearsal = db.saveAuditLog({
+        event: 'DECISION_REHEARSAL',
+        indicatorsCount: indicators.length,
+        amountBand: amount < 100 ? 'UNDER_100' : amount < 500 ? '100_TO_499' : '500_PLUS'
+    });
+
+    return res.json({
+        success: true,
+        rehearsalId: rehearsal.id,
+        indicators,
+        missingContext: [
+            'Is the firm authorised? Check it independently on the official FCA Register and Warning List.',
+            'What evidence supports the promised return, and who supplied that evidence?',
+            'How is the promoter paid, and do they benefit if you sign up or trade?',
+            `If the £${amount.toLocaleString('en-GB')} were lost, what would ${reason.toLowerCase()} have to give up?`
+        ],
+        downsideScenario: scenario,
+        comprehension: {
+            question: 'What does leverage change in this scenario?',
+            options: [
+                'It guarantees a larger profit',
+                'It magnifies losses as well as gains',
+                'It makes the promoter FCA-authorised'
+            ],
+            correctOption: 1
+        },
+        boundary: 'Educational rehearsal only. This is not a scam determination, suitability assessment, or financial advice.'
+    });
+});
+
+app.post('/api/v1/decision-receipt', (req, res) => {
+    const rehearsalId = String(req.body.rehearsalId || '').trim();
+    const amount = numberInRange(req.body.amount, 1, 100_000);
+    const selectedOption = numberInRange(req.body.selectedOption, 0, 2);
+    if (!rehearsalId.startsWith('LOG-') || amount === null || selectedOption === null) {
+        return res.status(400).json({ error: 'Complete a rehearsal and select an answer first.' });
+    }
+
+    const understood = selectedOption === 1;
+    const receipt = db.saveAuditLog({ event: 'DECISION_RECEIPT', understood, amountBand: amount < 100 ? 'UNDER_100' : amount < 500 ? '100_TO_499' : '500_PLUS' });
+    return res.json({
+        success: true,
+        receiptId: receipt.id,
+        createdAt: receipt.timestamp,
+        learningStatus: understood ? 'CORE_RISK_UNDERSTOOD' : 'REVIEW_RECOMMENDED',
+        nextStep: understood
+            ? 'Pause and independently verify the firm, evidence, costs and downside before deciding.'
+            : 'Review the downside scenario: leverage magnifies losses as well as gains.',
+        privacy: 'The claim text and personal reason were not stored in this demo receipt.',
+        boundary: 'This receipt records completion of an educational rehearsal, not approval to invest.'
+    });
+});
+
 // 2. SIMPLIFIED UK PAYSLIP EDUCATION API
 app.post('/api/v1/payslip/decode', (req, res) => {
     const grossSalary = numberInRange(req.body.grossSalary, 0, 1_000_000);

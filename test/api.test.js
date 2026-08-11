@@ -44,3 +44,34 @@ test('serves the website and approved assets', async () => {
     await request(app).get('/').expect(200).expect('Content-Type', /html/);
     await request(app).get('/style.css').expect(200).expect('Content-Type', /css/);
 });
+
+test('runs a decision rehearsal without returning advice', async () => {
+    const response = await request(app).post('/api/v1/rehearsal').send({
+        claimText: 'Guaranteed 50x leverage returns. DM me today.',
+        amount: 250,
+        reason: 'save for a rental deposit'
+    }).expect(200);
+
+    assert.equal(response.body.success, true);
+    assert.match(response.body.downsideScenario, /full £250 at risk/);
+    assert.match(response.body.boundary, /not a scam determination/);
+    assert.equal(response.body.comprehension.correctOption, 1);
+});
+
+test('creates an educational decision receipt after comprehension check', async () => {
+    const rehearsal = await request(app).post('/api/v1/rehearsal').send({
+        claimText: 'Guaranteed 50x leverage returns',
+        amount: 250,
+        reason: 'pay for a holiday'
+    }).expect(200);
+
+    const receipt = await request(app).post('/api/v1/decision-receipt').send({
+        rehearsalId: rehearsal.body.rehearsalId,
+        amount: 250,
+        selectedOption: 1
+    }).expect(200);
+
+    assert.equal(receipt.body.learningStatus, 'CORE_RISK_UNDERSTOOD');
+    assert.match(receipt.body.privacy, /claim text.*not stored/i);
+    assert.match(receipt.body.boundary, /not approval to invest/);
+});

@@ -8,11 +8,11 @@
 
 ## 📋 Pre-Presentation Stage Checklist
 
-- [x] **Live Vercel Deployment**: App live at `https://finpulse-ai.vercel.app` (or local backup `http://localhost:8080`).
-- [x] **Express REST API Server**: Node.js backend running on port 3000 with FCA Warning List DB.
+- [x] **Live Vercel Deployment**: App live at `https://finpulse-ai-one.vercel.app` (or local backup `http://localhost:3000`).
+- [x] **Express REST API Server**: Educational API with claim-pattern checks, decision rehearsal and receipt generation.
 - [x] **Stage Demo Preset Bar**: 1-Click presets ready for zero-friction stage scoring.
-- [x] **PWA Mobile Offline Readiness**: ServiceWorker `sw.js` cached for zero-latency presentation.
-- [x] **Stage QR Code**: Embedded on Slide 1 for instant judge phone scanning.
+- [ ] **Offline Backup**: Keep a tested local copy open before taking the stage.
+- [ ] **Stage QR Code**: Add the final production URL to Slide 1 after deployment.
 
 ---
 
@@ -22,14 +22,14 @@
 | :--- | :--- | :--- | :--- |
 | **0:00 - 0:10** | Slide 1 (Title + QR Code) | Stage Entrance | Invite judges to scan the QR code on screen to open FinPulse AI live on their phones. |
 | **0:10 - 0:45** | Slide 2 (Maya Persona) | The Problem Hook | Tell the story of Maya, 21, opening her first payslip in London confused by tax codes, targeted by 50x leverage TikTok scams. |
-| **0:45 - 2:15** | **LIVE WORKING APP DEMO** | 90-Sec Demo | Click **`⚡ 50x Forex Scam`** -> Show **95% RED FLAG SCORE** & FCA Warning List match. Show **Payslip Pension Match (+£70/mo)** and **5-Yr Compound Sandbox**. |
-| **2:15 - 3:15** | Slide 3 (B2B ROI & Metrics) | Business Model | Show Bank B2B Portal: **£1.42M FCA Fine Savings (18.9x ROI)** under FCA FG22/5 rules. |
+| **0:45 - 2:15** | **LIVE WORKING APP DEMO** | 90-Sec Demo | Select **50x Forex Scam** -> check claim-risk indicators -> enter Maya's £250 rental-deposit context -> reveal the 1% leverage downside -> answer the comprehension check -> generate the private Decision Receipt. |
+| **2:15 - 3:15** | Slide 3 (B2B Outcome Concept) | Business Model | Show how a partner could measure anonymous completion and comprehension outcomes. Clearly label the dashboard as a concept, not compliance proof. |
 | **3:15 - 4:00** | Slide 4 (Vision & Close) | The Close | *"Duolingo for Money + AI Anti-Scam Shield. Join us in building investors, not gamblers."* |
 
 ---
 
 ## ⚔️ Q&A Defense Quick Reference
 
-1. **FCA Regulated Advice Boundary**: *"FinPulse AI provides financial capability education & scam math under FCA FG22/5 guidance, not regulated personal advice."*
-2. **Anti-Scraping Defense**: *"We use client-side OCR, user transcript submissions, and official platform API metadata endpoints — no fragile web scraping."*
-3. **Bank Buyer ROI**: *"Banks pay out of their FCA Consumer Duty compliance budget to satisfy legal mandates and prevent enforcement fines."*
+1. **FCA Regulated Advice Boundary**: *"FinPulse provides educational pattern checks and decision rehearsal, not financial advice, firm authorisation checks or scam determinations."*
+2. **Input Boundary**: *"For this prototype, the user pastes a claim or transcript. Real image and video OCR are intentionally outside the demo scope."*
+3. **Bank Buyer Hypothesis**: *"We would test whether banks, employers and universities will fund access as financial-capability infrastructure. Consumer Duty makes customer understanding relevant, but FinPulse does not itself prove compliance."*
