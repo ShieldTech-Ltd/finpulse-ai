@@ -22,6 +22,11 @@ test('validates scanner and payslip input', async () => {
     await request(app).post('/api/v1/payslip/decode').send({ grossSalary: -1, pensionRate: 5 }).expect(400);
 });
 
+test('returns 400 for malformed JSON', async () => {
+    await request(app).post('/api/v1/scan')
+        .set('Content-Type', 'application/json').send('{broken').expect(400, { error: 'Invalid JSON body' });
+});
+
 test('caption analysis is explicitly not OCR', async () => {
     const response = await request(app).post('/api/v1/scan/ocr')
         .send({ rawCaption: 'Guaranteed 50x leverage returns' }).expect(200);
