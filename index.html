@@ -69,7 +69,7 @@
             <div class="stage-demo-bar glass-card mb-4" style="background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3); padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span class="badge" style="background: #6366f1; color: #fff; padding: 4px 10px; border-radius: 20px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">⚡ 1-Click Stage Demo</span>
-                    <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">Select a live finfluencer preset for instant stage scoring:</span>
+                    <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">Start Maya's complete claim-to-decision rehearsal:</span>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="btn btn-secondary btn-sm preset-btn" data-preset="forex"><i class="fa-brands fa-tiktok text-accent"></i> 50x Forex Scam</button>
@@ -81,7 +81,7 @@
             <div class="hero-banner">
                 <div class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Educational Promotion Risk Checker</div>
                 <h1>Cut Through <span class="text-gradient">Social Media Money Noise</span></h1>
-                <p>Paste any viral claim or video transcript from <strong>TikTok, Instagram Reels, YouTube Shorts, or X</strong>. FinPulse AI exposes hidden risks, leverage traps, and mathematical reality in seconds.</p>
+                <p>Paste a viral claim or transcript from <strong>TikTok, Instagram Reels, YouTube Shorts, or X</strong>. FinPulse highlights risk indicators, reveals missing context and rehearses the downside before any money is committed.</p>
             </div>
 
             <div class="grid-2col">
@@ -113,7 +113,7 @@
 
                     <div class="button-row" style="margin-top: 16px;">
                         <button id="scan-btn" class="btn-3d btn-3d-primary" style="width: 100%;">
-                            <i class="fa-solid fa-microchip"></i> Audit Claim &amp; Expose Reality
+                            <i class="fa-solid fa-microchip"></i> Check Claim Risk Indicators
                         </button>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
 
                     <div class="audit-metrics-grid">
                         <div class="metric-box">
-                            <span class="metric-label">Scam / Trap Score</span>
+                            <span class="metric-label">Claim-Risk Indicators</span>
                             <span class="metric-val text-red" id="metric-score">92%</span>
                         </div>
                         <div class="metric-box">
@@ -137,28 +137,87 @@
                             <span class="metric-val text-orange" id="metric-risk">Extreme Leverage</span>
                         </div>
                         <div class="metric-box">
-                            <span class="metric-label">Finfluencer Profit Source</span>
+                            <span class="metric-label">Independent Verification</span>
                             <span class="metric-val text-purple" id="metric-monetization">Affiliate Commission</span>
                         </div>
                     </div>
 
                     <div class="audit-details">
                         <h4><i class="fa-solid fa-list-check"></i> Red Flag Analysis:</h4>
-                        <ul id="red-flags-list" class="styled-list">
+                        <ul id="flags-container" class="styled-list">
                             <!-- Populated dynamically -->
                         </ul>
 
                         <div class="reality-box">
                             <h4><i class="fa-solid fa-lightbulb text-gold"></i> The Plain-Truth Reality:</h4>
-                            <p id="reality-text">Loading reality check...</p>
+                            <p id="reality-box-text">Loading reality check...</p>
                         </div>
 
                         <div class="verdict-banner" id="verdict-banner">
-                            <strong>VERDICT:</strong> <span>DO NOT FOLLOW THIS ADVICE. 99% of retail traders using high leverage lose their principal within 90 days.</span>
+                            <strong>BOUNDARY:</strong> <span id="verdict-text">This educational pattern check cannot determine whether a firm or promotion is safe.</span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <section class="decision-flow glass-card" id="decision-flow" aria-labelledby="decision-flow-title">
+                <div class="decision-flow-heading">
+                    <div>
+                        <span class="flow-kicker">Maya's 90-second journey</span>
+                        <h2 id="decision-flow-title">Rehearse the decision before risking money</h2>
+                    </div>
+                    <div class="flow-progress" aria-label="Four-step decision rehearsal">
+                        <span class="flow-step active">1 Claim</span>
+                        <span class="flow-step">2 Context</span>
+                        <span class="flow-step">3 Understand</span>
+                        <span class="flow-step">4 Receipt</span>
+                    </div>
+                </div>
+
+                <div class="decision-input-grid">
+                    <div class="input-group">
+                        <label for="decision-amount">Amount Maya is considering</label>
+                        <div class="money-input"><span>£</span><input id="decision-amount" type="number" min="1" max="100000" value="250" inputmode="decimal"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="decision-reason">What is this money currently for?</label>
+                        <input id="decision-reason" type="text" maxlength="240" value="My rental deposit and emergency buffer">
+                    </div>
+                </div>
+                <button id="rehearse-btn" class="btn-3d btn-3d-primary"><i class="fa-solid fa-shield-heart"></i> Rehearse Maya's Decision</button>
+                <p id="decision-error" class="form-error hidden" role="alert"></p>
+
+                <div id="rehearsal-results" class="rehearsal-results hidden">
+                    <div class="decision-panel">
+                        <h3><i class="fa-solid fa-circle-question text-accent"></i> What the claim did not tell Maya</h3>
+                        <ul id="missing-context-list" class="styled-list"></ul>
+                    </div>
+                    <div class="decision-panel downside-panel">
+                        <span class="scenario-label">Personal downside rehearsal</span>
+                        <p id="downside-scenario"></p>
+                    </div>
+                    <div class="decision-panel comprehension-panel">
+                        <h3 id="comprehension-question">Check your understanding</h3>
+                        <div id="comprehension-options" class="receipt-options"></div>
+                        <button id="receipt-btn" class="btn btn-primary" disabled>Generate Private Decision Receipt</button>
+                    </div>
+                </div>
+
+                <article id="decision-receipt" class="decision-receipt hidden" aria-live="polite">
+                    <div class="receipt-header">
+                        <div><span class="flow-kicker">Educational completion record</span><h3>Decision Receipt</h3></div>
+                        <span id="receipt-status" class="receipt-status"></span>
+                    </div>
+                    <dl class="receipt-grid">
+                        <div><dt>Receipt</dt><dd id="receipt-id"></dd></div>
+                        <div><dt>Created</dt><dd id="receipt-created"></dd></div>
+                        <div><dt>Amount rehearsed</dt><dd id="receipt-amount"></dd></div>
+                        <div><dt>Next step</dt><dd id="receipt-next-step"></dd></div>
+                    </dl>
+                    <p id="receipt-privacy" class="receipt-note"></p>
+                    <p class="receipt-boundary">This is not approval to invest, a scam determination or financial advice.</p>
+                </article>
+            </section>
         </section>
 
         <!-- TAB 2: PAYSLIP & DECISION DECODER -->
@@ -253,7 +312,7 @@
                         <div class="ps-row interactive-item">
                             <span></span>
                             <span></span>
-                            <span>Employee Pension (5%)</span>
+                            <span id="ps-pension-label">Employee Pension (5%)</span>
                             <span id="ps-pension" class="text-purple">-£116.67</span>
                         </div>
 
@@ -278,7 +337,7 @@
 
                     <div class="payslip-insight-callout">
                         <i class="fa-solid fa-circle-info text-accent"></i>
-                        <span id="payslip-tip">Your employer adds an extra <strong>£70.00/mo FREE money</strong> to your pension! Always claim maximum employer pension match.</span>
+                        <span id="payslip-tip">Illustrative employer contribution shown. Check your workplace scheme rules before deciding.</span>
                     </div>
                 </div>
             </div>

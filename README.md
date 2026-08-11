@@ -5,6 +5,7 @@ FinPulse AI is an educational financial-literacy and scam-awareness prototype bu
 It demonstrates:
 
 - plain-language checks for common high-risk promotion patterns;
+- a guided pre-decision rehearsal with missing-context questions, a personalised downside scenario, a comprehension check and a private Decision Receipt;
 - a simplified UK payslip learning calculator;
 - hypothetical investment stress-test visualisations;
 - gamified financial-literacy lessons;
@@ -13,6 +14,16 @@ It demonstrates:
 ## Important limitations
 
 FinPulse AI does not provide financial advice, determine whether a firm is authorised, perform real image/video OCR, certify financial capability, or establish FCA Consumer Duty compliance. Outputs are educational prompts produced by deterministic rules. Verify firms directly through the official FCA Register and Warning List, and verify tax results against current HMRC guidance.
+
+## 90-second judge demo
+
+1. Select **50x Forex Scam** and run **Check Claim Risk Indicators**.
+2. Keep Maya's example amount and rental-deposit reason, then select **Rehearse Maya's Decision**.
+3. Show the missing context and personalised leverage downside.
+4. Answer **It magnifies losses as well as gains**.
+5. Generate the private Decision Receipt and close on the independent-verification next step.
+
+The receipt records educational completion only. It intentionally stores neither the pasted claim nor Maya's personal reason.
 
 The public deployment stores only short-lived, non-identifying demo events in memory. It intentionally has no durable customer database. Partner telemetry routes are hidden unless `ADMIN_API_TOKEN` is configured. The app does not mirror the FCA Warning List because its former RSS URL currently redirects to a missing page; users are sent to the official live list instead. A production service would additionally require authenticated users, tenant isolation, consent and retention controls, a durable managed datastore, monitoring, regulatory review, and independent security testing.
 
