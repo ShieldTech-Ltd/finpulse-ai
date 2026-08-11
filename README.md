@@ -9,11 +9,17 @@
   [![License](https://img.shields.io/badge/License-MIT-06b6d4?style=for-the-badge)]()
 
   <p align="center">
-    <strong>Duolingo for Money + AI Anti-Scam Shield</strong><br>
-    Built for the <strong>Work in Fintech AI Summit & AI Hackathon 2026</strong> @ NatWest Conference Centre, London.
+    <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FShieldTech-Ltd%2Ffinpulse-ai">
+      <img src="https://vercel.com/button" alt="Deploy with Vercel" height="36">
+    </a>
   </p>
 
-  [Explore Live Prototype](http://localhost:8080) • [View Strategy PDF](FinPulse_AI_Hackathon_Winning_Pack.pdf) • [Architecture Specs](#-system-architecture--workflow) • [FCA Compliance](#-fca-consumer-duty-compliance)
+  <p align="center">
+    <strong>Duolingo for Money + AI Anti-Scam Shield</strong><br>
+    Built for the <strong>Work in Fintech AI Summit &amp; AI Hackathon 2026</strong> @ NatWest Conference Centre, London.
+  </p>
+
+  [🚀 1-Click Deploy to Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FShieldTech-Ltd%2Ffinpulse-ai) • [View Strategy PDF](FinPulse_AI_Hackathon_Winning_Pack.pdf) • [Architecture Specs](#-system-architecture--workflow) • [FCA Compliance](#-fca-consumer-duty-compliance)
 
 </div>
 
