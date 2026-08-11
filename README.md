@@ -1,6 +1,6 @@
 <div align="center">
 
-  # ⚡ FinPulse AI (Enterprise Platform)
+  # ⚡ FinPulse AI
   ### Next-Generation Financial Immunity & Capability Engine for Gen Z
 
   [![Work in Fintech 2026](https://img.shields.io/badge/WIF_Hackathon-Flagship_Submission-6366f1?style=for-the-badge&logo=shield)](https://workinfintech.com)
