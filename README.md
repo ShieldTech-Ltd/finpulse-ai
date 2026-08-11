@@ -31,6 +31,10 @@
 
 ## 📐 System Architecture & Workflow
 
+<p align="center">
+  <img src="animated_architecture.svg" alt="FinPulse AI Animated System Architecture & Data Pipeline" width="100%">
+</p>
+
 ```mermaid
 flowchart TD
     subgraph "Input Vectors"

@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#0b0f19" />
+    </linearGradient>
+
+    <!-- Node Gradients -->
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#312e81" />
+    </linearGradient>
+
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#083344" />
+      <stop offset="100%" stop-color="#164e63" />
+    </linearGradient>
+
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2e1065" />
+      <stop offset="100%" stop-color="#581c87" />
+    </linearGradient>
+
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#065f46" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <style>
+    .title-text { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 22px; font-weight: 700; fill: #f3f4f6; }
+    .sub-text { font-family: system-ui, sans-serif; font-size: 12px; fill: #9ca3af; }
+    .col-header { font-family: system-ui, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; }
+    .node-title { font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #ffffff; }
+    .node-sub { font-family: system-ui, sans-serif; font-size: 10px; fill: #9ca3af; }
+    
+    /* Pipe path styling */
+    .pipe { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 2; stroke-dasharray: 4 4; }
+    
+    /* Animated Glowing Particles */
+    .particle-cyan { fill: #06b6d4; filter: url(#glow); }
+    .particle-purple { fill: #a855f7; filter: url(#glow); }
+    .particle-green { fill: #10b981; filter: url(#glow); }
+
+    /* Pulsing Beacon Rings */
+    @keyframes pulseRing {
+      0% { r: 4px; opacity: 1; }
+      100% { r: 12px; opacity: 0; }
+    }
+    .beacon { animation: pulseRing 1.8s infinite ease-out; }
+  </style>
+
+  <!-- Background -->
+  <rect width="1000" height="500" rx="16" fill="url(#bgGrad)" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+
+  <!-- Title & Banner -->
+  <text x="40" y="45" class="title-text">FinPulse AI — System Architecture &amp; Data Pipeline</text>
+  <text x="40" y="66" class="sub-text">Real-time anti-scam telemetry, UK tax engine &amp; FCA Consumer Duty compliance flow</text>
+
+  <!-- Column Headers -->
+  <text x="130" y="105" text-anchor="middle" class="col-header" fill="#a5b4fc">1. INPUT VECTORS</text>
+  <text x="380" y="105" text-anchor="middle" class="col-header" fill="#67e8f9">2. FINPULSE AI ENGINE</text>
+  <text x="630" y="105" text-anchor="middle" class="col-header" fill="#e9d5ff">3. B2B TELEMETRY</text>
+  <text x="870" y="105" text-anchor="middle" class="col-header" fill="#6ee7b7">4. IMPACT OUTCOMES</text>
+
+  <!-- CONNECTING PIPE PATHS (Defined for Motion) -->
+  <!-- Top Row Pipes -->
+  <path id="pipe1" class="pipe" d="M 220 160 L 290 160" />
+  <path id="pipe2" class="pipe" d="M 470 160 L 540 160" />
+  <path id="pipe3" class="pipe" d="M 720 160 L 790 160" />
+
+  <!-- Middle Row Pipes -->
+  <path id="pipe4" class="pipe" d="M 220 270 L 290 270" />
+  <path id="pipe5" class="pipe" d="M 470 270 L 540 270" />
+  <path id="pipe6" class="pipe" d="M 720 270 L 790 270" />
+
+  <!-- Bottom Row Pipes -->
+  <path id="pipe7" class="pipe" d="M 220 380 L 290 380" />
+  <path id="pipe8" class="pipe" d="M 470 380 L 540 380" />
+  <path id="pipe9" class="pipe" d="M 720 380 L 790 380" />
+
+  <!-- ANIMATED DATA PARTICLES ALONG PATHS -->
+  <!-- Top Row Particle Flow -->
+  <circle class="particle-cyan" r="4">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 220 160 L 290 160" />
+  </circle>
+  <circle class="particle-cyan" r="4">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 470 160 L 540 160" begin="0.6s" />
+  </circle>
+  <circle class="particle-green" r="4">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 720 160 L 790 160" begin="1.2s" />
+  </circle>
+
+  <!-- Middle Row Particle Flow -->
+  <circle class="particle-purple" r="4">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 220 270 L 290 270" begin="0.3s" />
+  </circle>
+  <circle class="particle-purple" r="4">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 470 270 L 540 270" begin="0.9s" />
+  </circle>
+  <circle class="particle-green" r="4">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 720 270 L 790 270" begin="1.5s" />
+  </circle>
+
+  <!-- Bottom Row Particle Flow -->
+  <circle class="particle-cyan" r="4">
+    <animateMotion dur="2.0s" repeatCount="indefinite" path="M 220 380 L 290 380" begin="0.5s" />
+  </circle>
+  <circle class="particle-cyan" r="4">
+    <animateMotion dur="2.0s" repeatCount="indefinite" path="M 470 380 L 540 380" begin="1.1s" />
+  </circle>
+  <circle class="particle-green" r="4">
+    <animateMotion dur="2.0s" repeatCount="indefinite" path="M 720 380 L 790 380" begin="1.7s" />
+  </circle>
+
+  <!-- COLUMN 1: INPUT NODES -->
+  <g transform="translate(40, 120)">
+    <rect width="180" height="80" rx="10" fill="url(#indigoGrad)" stroke="#6366f1" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">📱 Social Video Input</text>
+    <text x="16" y="52" class="node-sub">TikTok, IG Reels, YT Shorts, X</text>
+  </g>
+
+  <g transform="translate(40, 230)">
+    <rect width="180" height="80" rx="10" fill="url(#indigoGrad)" stroke="#6366f1" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">🧾 UK Payslip &amp; Salary</text>
+    <text x="16" y="52" class="node-sub">Gross pay, tax code, pension %</text>
+  </g>
+
+  <g transform="translate(40, 340)">
+    <rect width="180" height="80" rx="10" fill="url(#indigoGrad)" stroke="#6366f1" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">📈 Strategy Selection</text>
+    <text x="16" y="52" class="node-sub">Index ETFs vs Meme trading</text>
+  </g>
+
+  <!-- COLUMN 2: CORE AI ENGINE NODES (With Active Pulsing Beacons) -->
+  <g transform="translate(290, 120)">
+    <rect width="180" height="80" rx="10" fill="url(#cyanGrad)" stroke="#06b6d4" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">🤖 AI BS Auditor</text>
+    <text x="16" y="52" class="node-sub">Leverage, affiliate &amp; DEX traps</text>
+    <!-- Beacon Ring -->
+    <circle cx="164" cy="16" r="6" fill="none" stroke="#06b6d4" stroke-width="2" class="beacon" />
+    <circle cx="164" cy="16" r="3" fill="#06b6d4" />
+  </g>
+
+  <g transform="translate(290, 230)">
+    <rect width="180" height="80" rx="10" fill="url(#cyanGrad)" stroke="#06b6d4" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">⚙️ HMRC Tax Engine</text>
+    <text x="16" y="52" class="node-sub">PAYE 20%, NI 8%, Pension match</text>
+    <circle cx="164" cy="16" r="6" fill="none" stroke="#06b6d4" stroke-width="2" class="beacon" />
+    <circle cx="164" cy="16" r="3" fill="#06b6d4" />
+  </g>
+
+  <g transform="translate(290, 340)">
+    <rect width="180" height="80" rx="10" fill="url(#cyanGrad)" stroke="#06b6d4" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">⚡ Crash Test Sandbox</text>
+    <text x="16" y="52" class="node-sub">5-yr compounding &amp; shock sim</text>
+    <circle cx="164" cy="16" r="6" fill="none" stroke="#06b6d4" stroke-width="2" class="beacon" />
+    <circle cx="164" cy="16" r="3" fill="#06b6d4" />
+  </g>
+
+  <!-- COLUMN 3: B2B TELEMETRY NODES -->
+  <g transform="translate(540, 120)">
+    <rect width="180" height="80" rx="10" fill="url(#purpleGrad)" stroke="#a855f7" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">🛡️ FCA Consumer Duty</text>
+    <text x="16" y="52" class="node-sub">Bank audit-ready logs</text>
+  </g>
+
+  <g transform="translate(540, 230)">
+    <rect width="180" height="80" rx="10" fill="url(#purpleGrad)" stroke="#a855f7" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">💼 Employer Wellbeing</text>
+    <text x="16" y="52" class="node-sub">Gen Z workplace retention</text>
+  </g>
+
+  <g transform="translate(540, 340)">
+    <rect width="180" height="80" rx="10" fill="url(#purpleGrad)" stroke="#a855f7" stroke-width="1.5" />
+    <text x="16" y="32" class="node-title">🎓 Capability Certification</text>
+    <text x="16" y="52" class="node-sub">Verified course graduation</text>
+  </g>
+
+  <!-- COLUMN 4: IMPACT OUTCOMES -->
+  <g transform="translate(790, 120)">
+    <rect width="170" height="80" rx="10" fill="url(#greenGrad)" stroke="#10b981" stroke-width="1.5" />
+    <text x="14" y="32" class="node-title">📊 Risk Scorecard</text>
+    <text x="14" y="52" class="node-sub">0-100% scam score + math</text>
+  </g>
+
+  <g transform="translate(790, 230)">
+    <rect width="170" height="80" rx="10" fill="url(#greenGrad)" stroke="#10b981" stroke-width="1.5" />
+    <text x="14" y="32" class="node-title">💰 Net Take-Home</text>
+    <text x="14" y="52" class="node-sub">Net pay + £70/mo free match</text>
+  </g>
+
+  <g transform="translate(790, 340)">
+    <rect width="170" height="80" rx="10" fill="url(#greenGrad)" stroke="#10b981" stroke-width="1.5" />
+    <text x="14" y="32" class="node-title">🏦 Bank B2B Revenue</text>
+    <text x="14" y="52" class="node-sub">£50k-£250k/yr per bank ARR</text>
+  </g>
+
+  <!-- Bottom Live Telemetry Indicator -->
+  <g transform="translate(40, 455)">
+    <circle cx="8" cy="0" r="4" fill="#10b981" />
+    <text x="20" y="4" font-family="system-ui" font-size="11" font-weight="700" fill="#10b981">LIVE DATA TELEMETRY PIPELINE • SUB-100MS LATENCY</text>
+  </g>
+</svg>
