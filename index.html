@@ -12,6 +12,14 @@
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
+    <!-- PWA Manifest & Mobile Icons -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FinPulse AI">
+    <link rel="apple-touch-icon" href="animated_architecture.svg">
 </head>
 <body class="dark-theme">
     <!-- Background glow effects -->
@@ -531,5 +539,15 @@
     </footer>
 
     <script src="app.js"></script>
+    <!-- ServiceWorker PWA Registration Script -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('⚡ PWA ServiceWorker registered cleanly:', reg.scope))
+                    .catch(err => console.warn('⚠️ PWA ServiceWorker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
