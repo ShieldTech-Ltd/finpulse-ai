@@ -30,9 +30,96 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("⚡ Connected to FinPulse AI Enterprise REST API Engine:", data);
             }
         })
-        .catch(err => {
-            console.warn("⚠️ API Server offline or running in fallback mode:", err.message);
+        .catch(() => {});
+
+    // --- 3D WebGL Floating Particle Shield Engine ---
+    function init3DHeroCanvas() {
+        const canvas = document.getElementById('hero-3d-canvas');
+        if (!canvas || typeof THREE === 'undefined') return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create 3D Rotating Shield Sphere Grid
+        const geometry = new THREE.IcosahedronGeometry(14, 2);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x6366f1,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
         });
+        const shieldSphere = new THREE.Mesh(geometry, material);
+        scene.add(shieldSphere);
+
+        // Floating Glowing Particles
+        const particleCount = 120;
+        const particleGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 80;
+            positions[i + 1] = (Math.random() - 0.5) * 80;
+            positions[i + 2] = (Math.random() - 0.5) * 50;
+        }
+
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particleMat = new THREE.PointsMaterial({
+            color: 0xa855f7,
+            size: 1.2,
+            transparent: true,
+            opacity: 0.7
+        });
+        const particleSystem = new THREE.Points(particleGeo, particleMat);
+        scene.add(particleSystem);
+
+        // Mouse Parallax Physics
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.0005;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.0005;
+        });
+
+        // Animation Loop
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            shieldSphere.rotation.x += 0.002 + mouseY;
+            shieldSphere.rotation.y += 0.003 + mouseX;
+            particleSystem.rotation.y -= 0.001;
+            renderer.render(scene, camera);
+        }
+
+        animate3D();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+
+    init3DHeroCanvas();
+
+    // --- 3D Glass Card Interactive Mouse Tilt Physics ---
+    const tiltCards = document.querySelectorAll('.glass-card, .quest-card');
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            const tiltX = (y / rect.height) * -10;
+            const tiltY = (x / rect.width) * 10;
+            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(8px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+        });
+    });
 
     // --- 1. Tab Navigation ---
     const navButtons = document.querySelectorAll('.nav-btn');

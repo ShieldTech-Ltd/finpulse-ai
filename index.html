@@ -9,8 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome icons -->
+    <!-- FontAwesome icons & Three.js 3D Engine -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css">
 
     <!-- PWA Manifest & Mobile Icons -->
@@ -22,6 +23,8 @@
     <link rel="apple-touch-icon" href="animated_architecture.svg">
 </head>
 <body class="dark-theme">
+    <!-- Interactive 3D WebGL Background Canvas -->
+    <canvas id="hero-3d-canvas"></canvas>
     <!-- Background glow effects -->
     <div class="bg-glow bg-glow-1"></div>
     <div class="bg-glow bg-glow-2"></div>
@@ -109,9 +112,9 @@
                     </div>
 
                     <div class="button-row">
-                        <button id="scan-btn" class="btn btn-primary btn-glow">
-                            <i class="fa-solid fa-robot"></i> Scan Multi-Platform Content
-                        </button>
+                        <button type="submit" id="analyze-btn" class="btn-3d btn-3d-primary" style="width: 100%; margin-top: 16px;">
+                        <i class="fa-solid fa-microchip"></i> Audit Claim &amp; Expose Reality
+                    </button>
                     </div>
                 </div>
 
