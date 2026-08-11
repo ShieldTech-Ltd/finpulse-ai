@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
 const fcaSync = require('./fcaSync');
+const ocrParser = require('./ocrParser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,54 @@ app.get('/api/v1/health', (req, res) => {
 app.get('/api/v1/fca/sync', async (req, res) => {
     const result = await fcaSync.syncFcaWarningList();
     res.json(result);
+});
+
+// Social Video OCR & Transcript Audit Endpoint
+app.post('/api/v1/scan/ocr', (req, res) => {
+    const { videoUrl, imageBase64, rawCaption, platform } = req.body;
+    const ocrResult = ocrParser.parseSocialVideoText({ videoUrl, imageBase64, rawCaption });
+    
+    const textToScan = ocrResult.extractedText.toLowerCase();
+    const fcaMatch = db.checkFcaWarning(textToScan);
+    
+    let scamScore = 30;
+    let riskLevel = "GREEN";
+    let flags = [];
+    
+    ocrResult.detectedKeywords.forEach(k => {
+        flags.push(`OCR Detected Keyword: ${k.keyword} (${k.severity} severity)`);
+        scamScore += k.severity === "HIGH" ? 35 : 20;
+    });
+
+    if (fcaMatch) {
+        scamScore = 98;
+        flags.push(`MATCHED UK FCA WARNING LIST: ${fcaMatch.name}`);
+    }
+
+    scamScore = Math.min(100, Math.max(0, scamScore));
+    if (scamScore >= 70) riskLevel = "RED";
+    else if (scamScore >= 40) riskLevel = "AMBER";
+
+    const auditLog = db.saveAuditLog({
+        event: "OCR_VIDEO_AUDIT",
+        platform: platform || "TikTok",
+        scamScore,
+        riskLevel,
+        ocrConfidence: ocrResult.confidenceScore
+    });
+
+    return res.json({
+        success: true,
+        auditId: auditLog.id,
+        ocrExtractedText: ocrResult.extractedText,
+        confidenceScore: ocrResult.confidenceScore,
+        scorecard: {
+            scamScore,
+            riskLevel,
+            flags,
+            fcaStatus: fcaMatch ? "WARNING_UNAUTHORISED_FIRM" : "NO_EXPLICIT_FCA_WARNING"
+        }
+    });
 });
 
 // 1. AI FINFLUENCER AUDIT API
