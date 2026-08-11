@@ -247,11 +247,16 @@ app.get('/api/v1/b2b/telemetry', (req, res) => {
     });
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`===================================================`);
-    console.log(`⚡ FinPulse AI Enterprise REST API Engine ONLINE`);
-    console.log(`🌐 Server running at: http://localhost:${PORT}`);
-    console.log(`🛡️ FCA Consumer Duty Telemetry Vault Active`);
-    console.log(`===================================================`);
-});
+// Export App for Vercel / Serverless Functions
+module.exports = app;
+
+// Start Server if run directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`===================================================`);
+        console.log(`⚡ FinPulse AI Enterprise REST API Engine ONLINE`);
+        console.log(`🌐 Server running at: http://localhost:${PORT}`);
+        console.log(`🛡️ FCA Consumer Duty Telemetry Vault Active`);
+        console.log(`===================================================`);
+    });
+}
