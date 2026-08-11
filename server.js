@@ -11,10 +11,13 @@ const PORT = process.env.PORT || 3000;
 // Start Scheduled FCA Warning List Sync Microservice
 fcaSync.startScheduledFcaSync();
 
+const path = require('path');
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Health Check Endpoint
 app.get('/api/v1/health', (req, res) => {
