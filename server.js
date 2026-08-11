@@ -306,6 +306,32 @@ app.get('/api/v1/b2b/telemetry', (req, res) => {
     });
 });
 
+// B2B FCA Consumer Duty Telemetry CSV / JSON Audit Exporter Endpoint
+app.get('/api/v1/b2b/export', (req, res) => {
+    const format = (req.query.format || 'json').toLowerCase();
+    const logs = db.getAuditLogs(100);
+
+    if (format === 'csv') {
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="FCA_Consumer_Duty_Audit_Telemetry_FinPulse.csv"');
+        
+        let csv = 'Audit_ID,Timestamp,Event_Type,Platform,Scam_Risk_Score,Risk_Level,Gross_Salary,Tax_Code\n';
+        logs.forEach(l => {
+            csv += `"${l.id}","${l.timestamp}","${l.event || ''}","${l.platform || ''}","${l.scamScore || ''}","${l.riskLevel || ''}","${l.grossSalary || ''}","${l.taxCode || ''}"\n`;
+        });
+        return res.send(csv);
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="FCA_Consumer_Duty_Audit_Telemetry_FinPulse.json"');
+    return res.json({
+        exportTimestamp: new Date().toISOString(),
+        fcaFramework: "UK FCA FG22/5 Consumer Duty Compliance Audit Vault",
+        totalExportedLogs: logs.length,
+        auditLogs: logs
+    });
+});
+
 // Export App for Vercel / Serverless Functions
 module.exports = app;
 
