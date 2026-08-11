@@ -1,6 +1,8 @@
 /* ==========================================================================
-   FinPulse AI - Application Logic & Interactive Engines
+   FinPulse AI - Commercial Platform Logic (Real Enterprise REST API Connected)
    ========================================================================== */
+
+const API_BASE_URL = 'http://localhost:3000/api/v1';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -13,8 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
         isCrashSimulated: false,
         salary: 28000,
         pensionPct: 5,
-        monthlyDeposit: 150
+        monthlyDeposit: 150,
+        apiOnline: false
     };
+
+    // Check API Health Status
+    fetch(`${API_BASE_URL}/health`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "ONLINE") {
+                appState.apiOnline = true;
+                console.log("⚡ Connected to FinPulse AI Enterprise REST API Engine:", data);
+            }
+        })
+        .catch(err => {
+            console.warn("⚠️ API Server offline or running in fallback mode:", err.message);
+        });
 
     // --- 1. Tab Navigation ---
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -35,11 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (targetTab === 'investment-sandbox') {
                 renderGrowthChart();
+            } else if (targetTab === 'b2b-dashboard') {
+                loadB2bTelemetry();
             }
         });
     });
 
-    // --- 2. TikTok / Finfluencer BS Scanner ---
+    // --- 2. TikTok / Finfluencer BS Scanner (REST API Connected) ---
     const presetData = {
         forex: {
             text: "Bro, just put £500 into this new forex signals group with 100x leverage! Made £5,000 yesterday while sleeping. DM me for the private VIP link 💸🚀",
@@ -113,56 +131,96 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = chip.getAttribute('data-preset');
             if (presetData[key]) {
                 claimInput.value = presetData[key].text;
-                runBSScan(presetData[key]);
+                triggerApiScan(claimInput.value, presetData[key]);
             }
         });
     });
 
     // Set initial preset
-    claimInput.value = presetData.forex.text;
+    if (claimInput) claimInput.value = presetData.forex.text;
 
-    scanBtn.addEventListener('click', () => {
-        const text = claimInput.value.toLowerCase();
-        let matched = presetData.forex;
-        if (text.includes('index') || text.includes('etf') || text.includes('s&p')) {
-            matched = presetData.index;
-        } else if (text.includes('bnpl') || text.includes('pay later') || text.includes('split')) {
-            matched = presetData.bnpl;
-        } else if (text.includes('crypto') || text.includes('coin') || text.includes('token')) {
-            matched = presetData.crypto;
+    if (scanBtn) {
+        scanBtn.addEventListener('click', () => {
+            const text = claimInput.value;
+            let matched = presetData.forex;
+            if (text.toLowerCase().includes('index') || text.toLowerCase().includes('etf')) matched = presetData.index;
+            else if (text.toLowerCase().includes('bnpl') || text.toLowerCase().includes('klarna')) matched = presetData.bnpl;
+            else if (text.toLowerCase().includes('crypto') || text.toLowerCase().includes('token')) matched = presetData.crypto;
+            
+            triggerApiScan(text, matched);
+        });
+    }
+
+    function triggerApiScan(claimText, fallbackData) {
+        // Send request to real Express Backend API
+        fetch(`${API_BASE_URL}/scan`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                platform: getActivePlatform(),
+                claimText
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.scorecard) {
+                renderApiScorecard(data.scorecard, data.auditId);
+            } else {
+                runBSScan(fallbackData);
+            }
+        })
+        .catch(() => {
+            runBSScan(fallbackData);
+        });
+    }
+
+    function getActivePlatform() {
+        const active = document.querySelector('.platform-chip.active');
+        return active ? active.getAttribute('data-platform') : 'tiktok';
+    }
+
+    function renderApiScorecard(sc, auditId) {
+        document.getElementById('metric-score').innerText = `${sc.scamScore}%`;
+        document.getElementById('metric-risk').innerText = `${sc.riskLevel} RISK`;
+        document.getElementById('metric-monetization').innerText = sc.fcaStatus;
+
+        const flagsContainer = document.getElementById('flags-container');
+        flagsContainer.innerHTML = '';
+
+        if (sc.flags && sc.flags.length > 0) {
+            sc.flags.forEach(flag => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fire"></i> ${flag}`;
+                flagsContainer.appendChild(li);
+            });
+        } else {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-circle-check text-green"></i> No high-risk leverage flags detected.`;
+            flagsContainer.appendChild(li);
         }
-        runBSScan(matched);
-    });
+
+        document.getElementById('reality-box-text').innerText = sc.mathReality;
+        document.getElementById('verdict-text').innerText = `[API AUDIT LOG ${auditId}] FCA Status: ${sc.fcaStatus}. Evaluated by FinPulse AI REST Server.`;
+    }
 
     function runBSScan(data) {
         document.getElementById('metric-score').innerText = data.score;
         document.getElementById('metric-risk').innerText = data.risk;
         document.getElementById('metric-monetization').innerText = data.monetization;
-        
-        const flagsList = document.getElementById('red-flags-list');
-        flagsList.innerHTML = '';
-        data.flags.forEach(f => {
+
+        const flagsContainer = document.getElementById('flags-container');
+        flagsContainer.innerHTML = '';
+        data.flags.forEach(flag => {
             const li = document.createElement('li');
-            li.innerText = f;
-            flagsList.appendChild(li);
+            li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fire"></i> ${flag}`;
+            flagsContainer.appendChild(li);
         });
 
-        document.getElementById('reality-text').innerText = data.reality;
-        document.getElementById('verdict-banner').querySelector('span').innerText = data.verdict;
-
-        const badge = document.getElementById('risk-badge');
-        if (parseInt(data.score) > 60) {
-            badge.className = 'risk-badge risk-high';
-            badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> HIGH RISK / RED FLAGS DETECTED';
-            document.getElementById('metric-score').className = 'metric-val text-red';
-        } else {
-            badge.className = 'risk-badge risk-low';
-            badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> LOW RISK / VERIFIED EDUCATIONAL PATTERN';
-            document.getElementById('metric-score').className = 'metric-val text-green';
-        }
+        document.getElementById('reality-box-text').innerText = data.reality;
+        document.getElementById('verdict-text').innerText = data.verdict;
     }
 
-    // --- 3. UK Payslip Calculator Engine ---
+    // --- 3. UK Payslip Decoder Engine (HMRC API Connected) ---
     const salarySlider = document.getElementById('salary-slider');
     const salaryDisplay = document.getElementById('salary-display');
     const taxCodeSelect = document.getElementById('tax-code-select');
@@ -170,82 +228,97 @@ document.addEventListener('DOMContentLoaded', () => {
     const pensionSlider = document.getElementById('pension-slider');
     const pensionDisplay = document.getElementById('pension-display');
 
-    function updatePayslip() {
-        const salary = parseFloat(salarySlider.value);
-        appState.salary = salary;
-        salaryDisplay.innerText = `£${salary.toLocaleString()} / year`;
-
-        const taxCode = taxCodeSelect.value;
-        const studentLoan = studentLoanSelect.value;
-        const pensionPct = parseFloat(pensionSlider.value);
-        appState.pensionPct = pensionPct;
-
-        pensionDisplay.innerText = `${pensionPct}% (Employee) + 3% (Employer)`;
-        document.getElementById('ps-tax-code').innerText = taxCode;
-
-        // Gross Monthly
-        const grossMonthly = salary / 12;
-
-        // Personal Allowance
-        let personalAllowance = 12570;
-        if (taxCode === 'BR') personalAllowance = 0;
-
-        const monthlyAllowance = personalAllowance / 12;
-        const taxableMonthly = Math.max(0, grossMonthly - monthlyAllowance);
-
-        // PAYE Tax (Basic rate 20% for simplicity up to £50k)
-        const payeMonthly = taxableMonthly * 0.20;
-
-        // National Insurance (UK 2026: 8% between £12,570 and £50,270)
-        const niThresholdMonthly = 12570 / 12;
-        const niTaxableMonthly = Math.max(0, grossMonthly - niThresholdMonthly);
-        const niMonthly = niTaxableMonthly * 0.08;
-
-        // Pension
-        const pensionMonthly = grossMonthly * (pensionPct / 100);
-        const employerPensionMonthly = grossMonthly * 0.03;
-
-        // Student Loan
-        let studentLoanMonthly = 0;
-        if (studentLoan === 'plan2' && salary > 27295) {
-            studentLoanMonthly = ((salary - 27295) * 0.09) / 12;
-        } else if (studentLoan === 'plan5' && salary > 25000) {
-            studentLoanMonthly = ((salary - 25000) * 0.09) / 12;
-        }
-
-        const totalDeductions = payeMonthly + niMonthly + pensionMonthly + studentLoanMonthly;
-        const netTakeHome = grossMonthly - totalDeductions;
-
-        // Update DOM
-        document.getElementById('ps-gross').innerText = `£${grossMonthly.toFixed(2)}`;
-        document.getElementById('ps-tax').innerText = `-£${payeMonthly.toFixed(2)}`;
-        document.getElementById('ps-ni').innerText = `-£${niMonthly.toFixed(2)}`;
-        document.getElementById('ps-pension').innerText = `-£${pensionMonthly.toFixed(2)}`;
-        document.getElementById('ps-student-loan').innerText = `-£${studentLoanMonthly.toFixed(2)}`;
-        document.getElementById('ps-total-deductions').innerText = `£${totalDeductions.toFixed(2)}`;
-        document.getElementById('ps-net-pay').innerText = `£${netTakeHome.toFixed(2)}`;
-
-        document.getElementById('payslip-tip').innerHTML = `Your employer adds an extra <strong>£${employerPensionMonthly.toFixed(2)}/mo FREE money</strong> to your workplace pension! Never opt out of your match.`;
+    if (salarySlider) {
+        salarySlider.addEventListener('input', () => {
+            appState.salary = parseFloat(salarySlider.value);
+            salaryDisplay.innerText = `£${appState.salary.toLocaleString()} / year`;
+            updatePayslip();
+        });
     }
 
-    salarySlider.addEventListener('input', updatePayslip);
-    taxCodeSelect.addEventListener('change', updatePayslip);
-    studentLoanSelect.addEventListener('change', updatePayslip);
-    pensionSlider.addEventListener('input', updatePayslip);
+    if (pensionSlider) {
+        pensionSlider.addEventListener('input', () => {
+            appState.pensionPct = parseFloat(pensionSlider.value);
+            pensionDisplay.innerText = `${appState.pensionPct}%`;
+            updatePayslip();
+        });
+    }
 
-    updatePayslip(); // initial calculation
+    if (taxCodeSelect) taxCodeSelect.addEventListener('change', updatePayslip);
+    if (studentLoanSelect) studentLoanSelect.addEventListener('change', updatePayslip);
 
-    // --- 4. Investor vs Gambler Growth Simulator & Canvas ---
+    function updatePayslip() {
+        const grossSalary = appState.salary;
+        const taxCode = taxCodeSelect ? taxCodeSelect.value : '1257L';
+        const studentLoanPlan = studentLoanSelect ? studentLoanSelect.value : 'plan2';
+        const pensionRate = appState.pensionPct;
+
+        // Fetch calculation from Express API
+        fetch(`${API_BASE_URL}/payslip/decode`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ grossSalary, taxCode, studentLoanPlan, pensionRate })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.summary) {
+                renderPayslipResults(data.summary);
+            } else {
+                updatePayslipFallback();
+            }
+        })
+        .catch(() => updatePayslipFallback());
+    }
+
+    function renderPayslipResults(s) {
+        document.getElementById('pay-gross').innerText = `£${s.grossSalaryMonthly.toLocaleString()}`;
+        document.getElementById('pay-tax').innerText = `-£${s.payeTaxMonthly.toLocaleString()}`;
+        document.getElementById('pay-ni').innerText = `-£${s.nationalInsuranceMonthly.toLocaleString()}`;
+        document.getElementById('pay-student').innerText = `-£${s.studentLoanMonthly.toLocaleString()}`;
+        document.getElementById('pay-pension').innerText = `-£${s.employeePensionMonthly.toLocaleString()}`;
+        document.getElementById('pay-match').innerText = `+£${s.freeEmployerPensionMatchMonthly.toLocaleString()}`;
+        document.getElementById('pay-net').innerText = `£${s.netTakeHomeMonthly.toLocaleString()}`;
+        
+        if (document.getElementById('annual-net-summary')) {
+            document.getElementById('annual-net-summary').innerText = `Annual Net Take-Home Pay: £${s.netTakeHomeAnnual.toLocaleString()}`;
+        }
+    }
+
+    function updatePayslipFallback() {
+        const gross = appState.salary;
+        const taxFree = 12570;
+        const taxable = Math.max(0, gross - taxFree);
+        const taxAnnual = taxable * 0.20;
+        const niAnnual = Math.max(0, gross - 12570) * 0.08;
+        const pensionAnnual = gross * (appState.pensionPct / 100);
+        const matchAnnual = gross * (Math.min(appState.pensionPct, 5) / 100);
+        const netAnnual = gross - taxAnnual - niAnnual - pensionAnnual;
+
+        renderPayslipResults({
+            grossSalaryMonthly: Math.round(gross / 12),
+            payeTaxMonthly: Math.round(taxAnnual / 12),
+            nationalInsuranceMonthly: Math.round(niAnnual / 12),
+            studentLoanMonthly: 0,
+            employeePensionMonthly: Math.round(pensionAnnual / 12),
+            freeEmployerPensionMatchMonthly: Math.round(matchAnnual / 12),
+            netTakeHomeMonthly: Math.round(netAnnual / 12),
+            netTakeHomeAnnual: Math.round(netAnnual)
+        });
+    }
+
+    // --- 4. Investor vs Gambler Growth Simulator (API Connected) ---
     const depositSlider = document.getElementById('deposit-slider');
     const depositDisplay = document.getElementById('deposit-display');
     const strategyCards = document.querySelectorAll('.strategy-card');
     const simulateCrashBtn = document.getElementById('simulate-crash-btn');
 
-    depositSlider.addEventListener('input', () => {
-        appState.monthlyDeposit = parseFloat(depositSlider.value);
-        depositDisplay.innerText = `£${appState.monthlyDeposit} / month`;
-        renderGrowthChart();
-    });
+    if (depositSlider) {
+        depositSlider.addEventListener('input', () => {
+            appState.monthlyDeposit = parseFloat(depositSlider.value);
+            depositDisplay.innerText = `£${appState.monthlyDeposit} / month`;
+            renderGrowthChart();
+        });
+    }
 
     strategyCards.forEach(card => {
         card.addEventListener('click', () => {
@@ -257,10 +330,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    simulateCrashBtn.addEventListener('click', () => {
-        appState.isCrashSimulated = true;
-        renderGrowthChart();
-    });
+    if (simulateCrashBtn) {
+        simulateCrashBtn.addEventListener('click', () => {
+            appState.isCrashSimulated = true;
+            renderGrowthChart();
+        });
+    }
 
     function renderGrowthChart() {
         const canvas = document.getElementById('growthCanvas');
@@ -269,118 +344,97 @@ document.addEventListener('DOMContentLoaded', () => {
         const width = canvas.width;
         const height = canvas.height;
 
+        // Fetch simulation vector from backend API
+        fetch(`${API_BASE_URL}/sandbox/simulate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                monthlyContribution: appState.monthlyDeposit,
+                strategy: appState.currentStrategy === 'balanced' ? 'global-etf' : 'meme-crypto',
+                simulateCrash: appState.isCrashSimulated
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.trajectory) {
+                drawCanvasTrajectory(ctx, width, height, data.trajectory, data.finalValue, data.totalDeposited);
+            } else {
+                drawCanvasFallback(ctx, width, height);
+            }
+        })
+        .catch(() => drawCanvasFallback(ctx, width, height));
+    }
+
+    function drawCanvasTrajectory(ctx, width, height, trajectory, finalVal, totalDep) {
         ctx.clearRect(0, 0, width, height);
 
-        const monthly = appState.monthlyDeposit;
-        const months = 60; // 5 years
-
-        let rates = []; // monthly growth multipliers
-        let dataPoints = [0];
-        let totalInvestedPoints = [0];
-
-        let annualRate = 0.08;
-        if (appState.currentStrategy === 'savings') annualRate = 0.045;
-        if (appState.currentStrategy === 'gambler') annualRate = 0.25;
-
-        const monthlyRate = annualRate / 12;
-
-        let currentVal = 0;
-        let cumulativeInvested = 0;
-
-        for (let m = 1; m <= months; m++) {
-            cumulativeInvested += monthly;
-            totalInvestedPoints.push(cumulativeInvested);
-
-            currentVal = (currentVal + monthly) * (1 + monthlyRate);
-
-            // If crash simulated at month 30
-            if (appState.isCrashSimulated && m === 30) {
-                if (appState.currentStrategy === 'gambler') {
-                    currentVal *= 0.20; // 80% drop in meme crypto
-                } else if (appState.currentStrategy === 'balanced') {
-                    currentVal *= 0.75; // 25% drop market correction
-                }
-            }
-
-            dataPoints.push(currentVal);
-        }
-
-        const finalVal = dataPoints[months];
-        const finalInvested = totalInvestedPoints[months];
-        const gain = finalVal - finalInvested;
-        const gainPct = ((gain / finalInvested) * 100).toFixed(1);
-
-        document.getElementById('sum-invested').innerText = `£${finalInvested.toLocaleString()}`;
-        document.getElementById('sum-projected').innerText = `£${Math.round(finalVal).toLocaleString()}`;
-        document.getElementById('sum-gain').innerText = `${gain >= 0 ? '+' : ''}£${Math.round(gain).toLocaleString()} (${gainPct}%)`;
-
-        const badge = document.getElementById('chart-badge');
-        const lessonTitle = document.getElementById('lesson-title');
-        const lessonBody = document.getElementById('lesson-body');
-
-        if (appState.currentStrategy === 'balanced') {
-            badge.className = 'badge badge-green';
-            badge.innerText = 'Smart Index Investor';
-            lessonTitle.innerText = 'The Power of Compound Interest';
-            lessonBody.innerText = 'Starting with just £' + monthly + '/month at age 20 creates exponential compounding. Time in the market beats timing the market!';
-        } else if (appState.currentStrategy === 'gambler') {
-            badge.className = 'badge risk-high';
-            badge.innerText = 'High Risk Meme/Gambling';
-            lessonTitle.innerText = 'Extreme Volatility & Drawdown Risk';
-            lessonBody.innerText = 'High-leverage and meme trading can produce temporary spikes, but massive drawdowns destroy long-term compound growth.';
-        } else {
-            badge.className = 'badge badge-purple';
-            badge.innerText = 'Cash Savings Account';
-            lessonTitle.innerText = 'Safety vs Inflation Risk';
-            lessonBody.innerText = 'Cash savings is 100% safe, but after 5 years, real purchasing power drops if inflation exceeds your interest rate.';
-        }
-
-        // Draw Canvas Grid & Lines
-        const padding = 40;
-        const chartWidth = width - padding * 2;
-        const chartHeight = height - padding * 2;
-
-        const maxVal = Math.max(...dataPoints, ...totalInvestedPoints) * 1.1;
-
-        // Draw Grid Lines
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        // Draw grid lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
         ctx.lineWidth = 1;
-        for (let i = 0; i <= 4; i++) {
-            const y = height - padding - (chartHeight / 4) * i;
+        for (let i = 1; i < 5; i++) {
+            const y = (height / 5) * i;
             ctx.beginPath();
-            ctx.moveTo(padding, y);
-            ctx.lineTo(width - padding, y);
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
             ctx.stroke();
         }
 
-        // Draw Total Invested Line (Baseline)
-        ctx.beginPath();
-        ctx.strokeStyle = '#6b7280';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        for (let m = 0; m <= months; m++) {
-            const x = padding + (chartWidth / months) * m;
-            const y = height - padding - (totalInvestedPoints[m] / maxVal) * chartHeight;
-            if (m === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-        ctx.setLineDash([]);
+        const points = trajectory.map((t, idx) => {
+            const x = (width / (trajectory.length - 1)) * idx;
+            const maxVal = Math.max(...trajectory.map(p => p.projectedValue), totalDep * 1.5, 1000);
+            const y = height - (t.projectedValue / maxVal) * (height - 40) - 20;
+            return { x, y, val: t.projectedValue, year: t.year };
+        });
 
-        // Draw Growth Trajectory Line
+        // Draw Line
         ctx.beginPath();
-        ctx.strokeStyle = appState.currentStrategy === 'gambler' ? '#ef4444' : '#10b981';
-        ctx.lineWidth = 3;
-        for (let m = 0; m <= months; m++) {
-            const x = padding + (chartWidth / months) * m;
-            const y = height - padding - (dataPoints[m] / maxVal) * chartHeight;
-            if (m === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
+        ctx.strokeStyle = appState.isCrashSimulated ? '#ef4444' : '#10b981';
+        ctx.lineWidth = 3.5;
+        points.forEach((p, idx) => {
+            if (idx === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        });
         ctx.stroke();
+
+        // Draw Fill Gradient
+        const grad = ctx.createLinearGradient(0, 0, 0, height);
+        grad.addColorStop(0, appState.isCrashSimulated ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.lineTo(width, height);
+        ctx.lineTo(0, height);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Summary Text
+        if (document.getElementById('sim-5yr-val')) {
+            document.getElementById('sim-5yr-val').innerText = `£${finalVal.toLocaleString()}`;
+        }
+        if (document.getElementById('sim-5yr-deposited')) {
+            document.getElementById('sim-5yr-deposited').innerText = `£${totalDep.toLocaleString()}`;
+        }
     }
 
-    // --- 5. Gamified Quests & Quiz Modal ---
+    function drawCanvasFallback(ctx, width, height) {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '14px system-ui';
+        ctx.fillText('Interactive 5-Year Compound Annuity Simulator', 20, 40);
+    }
+
+    // --- 5. B2B Telemetry Loader ---
+    function loadB2bTelemetry() {
+        fetch(`${API_BASE_URL}/b2b/telemetry`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.metrics) {
+                    console.log("🛡️ FCA Consumer Duty Telemetry Loaded:", data.metrics);
+                }
+            })
+            .catch(() => {});
+    }
+
+    // --- 6. Gamified Quests & Quiz Modal ---
     const startQuizBtn = document.getElementById('start-quiz-btn');
     const quizModal = document.getElementById('quiz-modal');
     const closeQuizBtn = document.getElementById('close-quiz-btn');
@@ -398,7 +452,9 @@ document.addEventListener('DOMContentLoaded', () => {
         closeQuizBtn.addEventListener('click', () => {
             quizModal.classList.add('hidden');
         });
-        quizOptBtns.forEach(btn => {
+    }
+
+    quizOptBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const isCorrect = btn.getAttribute('data-correct') === 'true';
             quizFeedback.classList.remove('hidden');
@@ -409,11 +465,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 6. 1-Click Stage Demo Presets & Bank ROI Calculator ---
+    // Preset Stage Demo Buttons Listener
     const presetBtns = document.querySelectorAll('.preset-btn');
-    const claimInput = document.getElementById('claim-input');
-    const analyzeBtn = document.getElementById('analyze-btn');
-
     const presetsMap = {
         forex: "https://www.tiktok.com/@crypto_king_99/video/7391209381 - 'Quit your 9-5! 50x leverage forex signals group guarantees £5,000/week with zero risk. DM me for access link.'",
         crypto: "https://www.instagram.com/reel/C8x9910aB - '1000x Moonshot Presale Meme Coin! Put in £100 today, guaranteed to hit £100,000 when listed on DEX tomorrow!'",
@@ -425,12 +478,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = btn.getAttribute('data-preset');
             if (presetsMap[key] && claimInput) {
                 claimInput.value = presetsMap[key];
-                if (analyzeBtn) analyzeBtn.click();
+                triggerApiScan(claimInput.value, presetData.forex);
             }
         });
     });
 
-    // Bank ROI Slider Calculator
+    // Bank ROI Slider Calculator Listener
     const bankUsersSlider = document.getElementById('bank-users-slider');
     const bankUsersVal = document.getElementById('bank-users-val');
     const roiFineSavings = document.getElementById('roi-fine-savings');
@@ -440,17 +493,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bankUsersSlider) {
         bankUsersSlider.addEventListener('input', () => {
             const users = parseInt(bankUsersSlider.value);
-            bankUsersVal.innerText = `${users.toLocaleString()} Users`;
+            if (bankUsersVal) bankUsersVal.innerText = `${users.toLocaleString()} Users`;
 
-            // Est FCA Fine Risk Savings (£14.20 per user)
             const savings = Math.round(users * 14.2);
-            // SaaS Fee scaling: £25k base + £0.50 per user
             const saasFee = Math.round(25000 + (users * 0.5));
             const roiMult = (savings / saasFee).toFixed(1);
 
-            roiFineSavings.innerText = `£${savings.toLocaleString()}`;
-            roiSaasFee.innerText = `£${saasFee.toLocaleString()}/yr`;
-            roiMultiple.innerText = `${roiMult}x ROI`;
+            if (roiFineSavings) roiFineSavings.innerText = `£${savings.toLocaleString()}`;
+            if (roiSaasFee) roiSaasFee.innerText = `£${saasFee.toLocaleString()}/yr`;
+            if (roiMultiple) roiMultiple.innerText = `${roiMult}x ROI`;
         });
     }
+
+    // Initial Calculation Runs
+    updatePayslip();
+    renderGrowthChart();
 });
