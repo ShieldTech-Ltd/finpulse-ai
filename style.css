@@ -31,6 +31,125 @@
     --font-heading: 'Space Grotesk', sans-serif;
 }
 
+/* ==========================================================================
+   3D Motion & Tactile Neomorphic UI System ($10,000 Premium Experience)
+   ========================================================================== */
+
+#hero-3d-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 3D Tactile Buttons */
+.btn-3d {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, background 0.2s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    overflow: hidden;
+}
+
+.btn-3d-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 0 #3730a3, 0 12px 25px -5px rgba(99, 102, 241, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.btn-3d-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 9px 0 #3730a3, 0 18px 30px -5px rgba(99, 102, 241, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.btn-3d-primary:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 3px 0 #3730a3, 0 6px 15px -2px rgba(99, 102, 241, 0.5);
+}
+
+.btn-3d-accent {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 0 #047857, 0 12px 25px -5px rgba(16, 185, 129, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.btn-3d-accent:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 9px 0 #047857, 0 18px 30px -5px rgba(16, 185, 129, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.btn-3d-accent:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 3px 0 #047857, 0 6px 15px -2px rgba(16, 185, 129, 0.4);
+}
+
+.btn-3d-purple {
+    background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 0 #6b21a8, 0 12px 25px -5px rgba(168, 85, 247, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.btn-3d-purple:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 9px 0 #6b21a8, 0 18px 30px -5px rgba(168, 85, 247, 0.7);
+}
+
+.btn-3d-purple:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 3px 0 #6b21a8, 0 6px 15px -2px rgba(168, 85, 247, 0.4);
+}
+
+/* 3D Shine Animation Sweep */
+.btn-3d::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: rotate(25deg);
+    transition: all 0.6s ease;
+}
+
+.btn-3d:hover::after {
+    left: 130%;
+}
+
+/* 3D Glass Card Tilt Effect */
+.glass-card-3d {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.glass-card-3d:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 30px 60px -12px rgba(99, 102, 241, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
