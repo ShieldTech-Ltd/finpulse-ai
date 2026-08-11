@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinPulse AI — Financial Immunity & Decision Engine for Gen Z</title>
+    <meta name="description" content="Duolingo for money: Cut through TikTok finfluencer noise, decode payslips, and master investing risk-free with AI.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Background glow effects -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Header / Navigation -->
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="logo-badge">
+                <i class="fa-solid fa-bolt text-accent"></i>
+            </div>
+            <span class="logo-text">FinPulse<span class="text-gradient">.AI</span></span>
+            <span class="edition-tag">WIF Hackathon '26</span>
+        </div>
+        
+        <nav class="nav-links">
+            <button class="nav-btn active" data-tab="bs-detector"><i class="fa-solid fa-shield-cat"></i> BS Scanner</button>
+            <button class="nav-btn" data-tab="payslip-decoder"><i class="fa-solid fa-file-invoice-dollar"></i> Payslip Decoder</button>
+            <button class="nav-btn" data-tab="investment-sandbox"><i class="fa-solid fa-chart-line-up"></i> Investor Sandbox</button>
+            <button class="nav-btn" data-tab="daily-quests"><i class="fa-solid fa-gamepad"></i> Daily Quests</button>
+            <button class="nav-btn b2b-btn" data-tab="b2b-dashboard"><i class="fa-solid fa-building-columns"></i> Bank/B2B View</button>
+        </nav>
+
+        <div class="user-stats">
+            <div class="stat-pill streak-pill" title="Daily Streak">
+                <i class="fa-solid fa-fire text-fire"></i>
+                <span id="streak-count">5 Days</span>
+            </div>
+            <div class="stat-pill xp-pill" title="Financial IQ XP">
+                <i class="fa-solid fa-trophy text-gold"></i>
+                <span id="xp-count">1,450 XP</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+
+        <!-- TAB 1: FINFLUENCER BS SCANNER -->
+        <section id="bs-detector" class="tab-content active">
+            <div class="hero-banner">
+                <div class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Multi-Platform Finfluencer Audit Engine</div>
+                <h1>Cut Through <span class="text-gradient">Social Media Money Noise</span></h1>
+                <p>Paste any viral claim or video transcript from <strong>TikTok, Instagram Reels, YouTube Shorts, or X</strong>. FinPulse AI exposes hidden risks, leverage traps, and mathematical reality in seconds.</p>
+            </div>
+
+            <div class="grid-2col">
+                <!-- Input Panel -->
+                <div class="card glass-card">
+                    <h3><i class="fa-solid fa-magnifying-glass-dollar text-accent"></i> Analyze Social Media Claim</h3>
+                    <p class="subtitle">Choose social media platform:</p>
+
+                    <div class="platform-selector">
+                        <button class="platform-chip active" data-platform="tiktok"><i class="fa-brands fa-tiktok text-accent"></i> TikTok</button>
+                        <button class="platform-chip" data-platform="instagram"><i class="fa-brands fa-instagram text-purple"></i> Instagram Reels</button>
+                        <button class="platform-chip" data-platform="youtube"><i class="fa-brands fa-youtube text-red"></i> YouTube Shorts</button>
+                        <button class="platform-chip" data-platform="x"><i class="fa-brands fa-x-twitter"></i> X / Twitter</button>
+                    </div>
+
+                    <p class="subtitle mt-3">Select a common viral scenario or paste video script / URL:</p>
+
+                    <div class="preset-pills">
+                        <button class="preset-chip active" data-preset="forex">💸 "Make £5k/day Trading Forex"</button>
+                        <button class="preset-chip" data-preset="crypto">🚀 "Next 100x Meme Coin Gem"</button>
+                        <button class="preset-chip" data-preset="bnpl">🛍️ "Buy Now Pay Later is Free Money"</button>
+                        <button class="preset-chip" data-preset="index">📈 "Low-Cost S&P 500 Index Fund"</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="claim-input">Video Script / Claim / Text:</label>
+                        <textarea id="claim-input" rows="4" placeholder="e.g. Bro, just put £500 into this new coin with 100x leverage and quit your 9-to-5 by Friday!"></textarea>
+                    </div>
+
+                    <div class="button-row">
+                        <button id="scan-btn" class="btn btn-primary btn-glow">
+                            <i class="fa-solid fa-robot"></i> Scan Multi-Platform Content
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Audit Result Output -->
+                <div class="card glass-card result-card" id="audit-result-panel">
+                    <div class="result-header">
+                        <h3><i class="fa-solid fa-shield-halved"></i> AI Audit Report</h3>
+                        <div id="risk-badge" class="risk-badge risk-high">
+                            <i class="fa-solid fa-triangle-exclamation"></i> HIGH RISK / RED FLAGS DETECTED
+                        </div>
+                    </div>
+
+                    <div class="audit-metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-label">Scam / Trap Score</span>
+                            <span class="metric-val text-red" id="metric-score">92%</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-label">Underlying Risk</span>
+                            <span class="metric-val text-orange" id="metric-risk">Extreme Leverage</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-label">Finfluencer Profit Source</span>
+                            <span class="metric-val text-purple" id="metric-monetization">Affiliate Commission</span>
+                        </div>
+                    </div>
+
+                    <div class="audit-details">
+                        <h4><i class="fa-solid fa-list-check"></i> Red Flag Analysis:</h4>
+                        <ul id="red-flags-list" class="styled-list">
+                            <!-- Populated dynamically -->
+                        </ul>
+
+                        <div class="reality-box">
+                            <h4><i class="fa-solid fa-lightbulb text-gold"></i> The Plain-Truth Reality:</h4>
+                            <p id="reality-text">Loading reality check...</p>
+                        </div>
+
+                        <div class="verdict-banner" id="verdict-banner">
+                            <strong>VERDICT:</strong> <span>DO NOT FOLLOW THIS ADVICE. 99% of retail traders using high leverage lose their principal within 90 days.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PAYSLIP & DECISION DECODER -->
+        <section id="payslip-decoder" class="tab-content">
+            <div class="hero-banner">
+                <div class="hero-badge"><i class="fa-solid fa-receipt"></i> UK Payslip & Salary Engine</div>
+                <h1>Understand Where Your <span class="text-gradient">Money Actually Goes</span></h1>
+                <p>Interactive UK payslip decoder for 18-25 year olds starting their first job or internship. Demystify PAYE, Tax Codes, National Insurance, and Pensions.</p>
+            </div>
+
+            <div class="grid-2col">
+                <!-- Interactive Controls -->
+                <div class="card glass-card">
+                    <h3><i class="fa-solid fa-sliders text-accent"></i> Salary & Tax Configuration</h3>
+                    
+                    <div class="form-group">
+                        <label for="salary-slider">Annual Gross Salary (£):</label>
+                        <div class="slider-val-display">
+                            <input type="range" id="salary-slider" min="15000" max="60000" step="1000" value="28000">
+                            <span id="salary-display" class="val-pill">£28,000 / year</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tax-code-select">UK Tax Code:</label>
+                        <select id="tax-code-select" class="custom-select">
+                            <option value="1257L" selected>1257L (Standard UK Tax-Free Personal Allowance £12,570)</option>
+                            <option value="BR">BR (Basic Rate 20% on all earnings - Emergency Tax!)</option>
+                            <option value="1257L-M">1257L-M1 (Emergency Month 1 Basis)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-loan-select">Student Loan Plan:</label>
+                        <select id="student-loan-select" class="custom-select">
+                            <option value="none">No Student Loan</option>
+                            <option value="plan2" selected>Plan 2 (Undergrad started 2012-2023 - 9% over £27,295)</option>
+                            <option value="plan5">Plan 5 (Undergrad started 2023+ - 9% over £25,000)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pension-slider">Workplace Pension Match (%):</label>
+                        <div class="slider-val-display">
+                            <input type="range" id="pension-slider" min="0" max="10" step="1" value="5">
+                            <span id="pension-display" class="val-pill">5% (Employee) + 3% (Employer)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Payslip Card -->
+                <div class="card glass-card payslip-paper">
+                    <div class="payslip-header">
+                        <div>
+                            <h2>MONTHLY PAYSLIP</h2>
+                            <p class="company-name">Acme Tech Ltd • London, UK</p>
+                        </div>
+                        <div class="pay-date">
+                            <span>PAY DATE</span>
+                            <strong>28 Aug 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="payslip-meta">
+                        <div>Tax Code: <strong id="ps-tax-code" class="highlight-code">1257L</strong></div>
+                        <div>NI Category: <strong>A</strong></div>
+                        <div>Period: <strong>Month 5</strong></div>
+                    </div>
+
+                    <div class="payslip-table">
+                        <div class="ps-row ps-header-row">
+                            <span>PAYMENTS</span>
+                            <span>AMOUNT</span>
+                            <span>DEDUCTIONS</span>
+                            <span>AMOUNT</span>
+                        </div>
+
+                        <div class="ps-row interactive-item">
+                            <span>Basic Pay</span>
+                            <span id="ps-gross">£2,333.33</span>
+                            <span>Income Tax (PAYE)</span>
+                            <span id="ps-tax" class="text-red">-£214.33</span>
+                        </div>
+
+                        <div class="ps-row interactive-item">
+                            <span>Overtime / Bonus</span>
+                            <span>£0.00</span>
+                            <span>National Insurance</span>
+                            <span id="ps-ni" class="text-red">-£86.13</span>
+                        </div>
+
+                        <div class="ps-row interactive-item">
+                            <span></span>
+                            <span></span>
+                            <span>Employee Pension (5%)</span>
+                            <span id="ps-pension" class="text-purple">-£116.67</span>
+                        </div>
+
+                        <div class="ps-row interactive-item">
+                            <span></span>
+                            <span></span>
+                            <span>Student Loan Repayment</span>
+                            <span id="ps-student-loan" class="text-orange">-£0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="payslip-footer">
+                        <div class="total-box">
+                            <span>TOTAL DEDUCTIONS</span>
+                            <strong id="ps-total-deductions" class="text-red">£417.13</strong>
+                        </div>
+                        <div class="net-pay-box">
+                            <span>NET TAKE-HOME PAY</span>
+                            <strong id="ps-net-pay" class="text-green">£1,916.20</strong>
+                        </div>
+                    </div>
+
+                    <div class="payslip-insight-callout">
+                        <i class="fa-solid fa-circle-info text-accent"></i>
+                        <span id="payslip-tip">Your employer adds an extra <strong>£70.00/mo FREE money</strong> to your pension! Always claim maximum employer pension match.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: INVESTOR VS GAMBLER SANDBOX -->
+        <section id="investment-sandbox" class="tab-content">
+            <div class="hero-banner">
+                <div class="hero-badge"><i class="fa-solid fa-chart-pie"></i> Risk & Growth Engine</div>
+                <h1>Build Wealth Like An <span class="text-gradient">Investor, Not A Gambler</span></h1>
+                <p>Simulate 5-year growth, compound interest, market crashes, and asset allocation without risking a single real penny.</p>
+            </div>
+
+            <div class="grid-2col">
+                <!-- Controls -->
+                <div class="card glass-card">
+                    <h3><i class="fa-solid fa-sliders text-accent"></i> Portfolio Strategy Sandbox</h3>
+
+                    <div class="form-group">
+                        <label for="deposit-slider">Monthly Investment (£):</label>
+                        <div class="slider-val-display">
+                            <input type="range" id="deposit-slider" min="25" max="500" step="25" value="150">
+                            <span id="deposit-display" class="val-pill">£150 / month</span>
+                        </div>
+                    </div>
+
+                    <div class="strategy-selector">
+                        <label>Choose Strategy Archetype:</label>
+                        
+                        <div class="strategy-card active" data-strategy="balanced">
+                            <div class="strat-header">
+                                <i class="fa-solid fa-shield-heart text-green"></i>
+                                <strong>Smart Investor (Index Funds)</strong>
+                            </div>
+                            <p>Global Diversified ETF (8% avg. return). Low fees, high compounding stability.</p>
+                        </div>
+
+                        <div class="strategy-card" data-strategy="gambler">
+                            <div class="strat-header">
+                                <i class="fa-solid fa-dice text-red"></i>
+                                <strong>Meme Trader / High-Leverage Crypto</strong>
+                            </div>
+                            <p>High volatility (+300% or -95%). 85% chance of severe drawdown within 12 months.</p>
+                        </div>
+
+                        <div class="strategy-card" data-strategy="savings">
+                            <div class="strat-header">
+                                <i class="fa-solid fa-piggy-bank text-purple"></i>
+                                <strong>Cash Savings Account</strong>
+                            </div>
+                            <p>High-Yield Savings (4.5% return). Guaranteed safety, but risks losing value to inflation.</p>
+                        </div>
+                    </div>
+
+                    <button id="simulate-crash-btn" class="btn btn-warning btn-glow mt-3">
+                        <i class="fa-solid fa-bolt"></i> Trigger Market Crash Stress Test
+                    </button>
+                </div>
+
+                <!-- Visual Simulation Chart & Metrics -->
+                <div class="card glass-card">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-chart-line"></i> 5-Year Wealth Trajectory</h3>
+                        <span id="chart-badge" class="badge badge-green">Balanced Diversified</span>
+                    </div>
+
+                    <!-- Simulated Canvas Chart -->
+                    <div class="chart-container">
+                        <canvas id="growthCanvas" width="500" height="260"></canvas>
+                    </div>
+
+                    <div class="stat-summary-grid">
+                        <div class="summary-box">
+                            <span class="s-label">Total Invested</span>
+                            <span class="s-val" id="sum-invested">£9,000</span>
+                        </div>
+                        <div class="summary-box">
+                            <span class="s-label">Projected Value (Yr 5)</span>
+                            <span class="s-val text-green" id="sum-projected">£11,148</span>
+                        </div>
+                        <div class="summary-box">
+                            <span class="s-label">Compound Gain</span>
+                            <span class="s-val text-accent" id="sum-gain">+£2,148 (23.8%)</span>
+                        </div>
+                    </div>
+
+                    <div class="lesson-box mt-3">
+                        <i class="fa-solid fa-graduation-cap text-gold"></i>
+                        <div class="lesson-content">
+                            <strong id="lesson-title">The Power of Compound Interest</strong>
+                            <p id="lesson-body">Starting with just £150/month at age 20 means compound interest does the heavy lifting. Time in the market beats timing the market!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: GAMIFIED DAILY QUESTS -->
+        <section id="daily-quests" class="tab-content">
+            <div class="hero-banner">
+                <div class="hero-badge"><i class="fa-solid fa-fire text-fire"></i> Daily Financial Hygiene</div>
+                <h1>Earn XP & Master <span class="text-gradient">Real Financial Skills</span></h1>
+                <p>Interactive 2-minute daily micro-lessons that turn boring money jargon into gamified habit formation.</p>
+            </div>
+
+            <div class="quests-grid">
+                <!-- Quest 1 -->
+                <div class="card glass-card quest-card">
+                    <div class="quest-status status-done"><i class="fa-solid fa-circle-check"></i> Completed</div>
+                    <div class="quest-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3>Red Flag Spotter</h3>
+                    <p>Identify 3 hidden fees in a BNPL agreement to protect your credit score.</p>
+                    <div class="quest-footer">
+                        <span class="xp-tag">+100 XP</span>
+                        <button class="btn btn-secondary btn-sm" disabled>Completed</button>
+                    </div>
+                </div>
+
+                <!-- Quest 2 -->
+                <div class="card glass-card quest-card highlight-quest">
+                    <div class="quest-status status-active"><i class="fa-solid fa-star"></i> Today's Quest</div>
+                    <div class="quest-icon"><i class="fa-solid fa-percent text-accent"></i></div>
+                    <h3>The Credit Score Quiz</h3>
+                    <p>Does checking your own credit score lower it? Test your knowledge.</p>
+                    <div class="quest-footer">
+                        <span class="xp-tag">+150 XP</span>
+                        <button id="start-quiz-btn" class="btn btn-primary btn-sm btn-glow">Play Quest</button>
+                    </div>
+                </div>
+
+                <!-- Quest 3 -->
+                <div class="card glass-card quest-card">
+                    <div class="quest-status status-locked"><i class="fa-solid fa-lock"></i> Unlocks Tomorrow</div>
+                    <div class="quest-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                    <h3>Tenancy Deposit Protection</h3>
+                    <p>Learn where your landlord legally must hold your deposit in the UK.</p>
+                    <div class="quest-footer">
+                        <span class="xp-tag">+200 XP</span>
+                        <button class="btn btn-secondary btn-sm" disabled>Locked</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Modal / Container -->
+            <div id="quiz-modal" class="card glass-card quiz-container hidden">
+                <div class="quiz-header">
+                    <h3><i class="fa-solid fa-brain text-accent"></i> Quick Financial IQ Challenge</h3>
+                    <button id="close-quiz-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="quiz-body">
+                    <h4 id="quiz-question">Question: Does checking your own credit score via a free app like ClearScore damage your credit rating?</h4>
+                    <div class="quiz-options">
+                        <button class="quiz-opt-btn" data-correct="true">
+                            <span class="opt-letter">A</span> No, it's a 'Soft Search' and has ZERO impact on your score.
+                        </button>
+                        <button class="quiz-opt-btn" data-correct="false">
+                            <span class="opt-letter">B</span> Yes, every search knocks 20 points off your rating.
+                        </button>
+                        <button class="quiz-opt-btn" data-correct="false">
+                            <span class="opt-letter">C</span> Only if you do it more than once a month.
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quiz-feedback" class="quiz-feedback hidden">
+                    <i class="fa-solid fa-circle-check text-green icon-lg"></i>
+                    <div>
+                        <strong>CORRECT! +150 XP Earned! 🎉</strong>
+                        <p>Checking your own credit score is a "soft search" and never hurts your rating. Applying for multiple credit cards at once IS a "hard search" which can temporarily drop your score.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: B2B FCA CONSUMER DUTY DASHBOARD -->
+        <section id="b2b-dashboard" class="tab-content">
+            <div class="hero-banner b2b-banner">
+                <div class="hero-badge b2b-badge"><i class="fa-solid fa-shield-check"></i> Bank & Employer B2B Portal</div>
+                <h1>FCA Consumer Duty <span class="text-gradient-purple">Compliance & Impact</span></h1>
+                <p>How banks (NatWest, Barclays, Monzo) and Gen Z employers license FinPulse AI to satisfy regulatory education duties and measure real customer capability.</p>
+            </div>
+
+            <div class="b2b-metrics-grid">
+                <div class="card glass-card b2b-card">
+                    <div class="b2b-icon"><i class="fa-solid fa-users-gear text-purple"></i></div>
+                    <span class="b2b-title">Active Gen Z Accounts</span>
+                    <strong class="b2b-val">42,850</strong>
+                    <span class="b2b-sub text-green"><i class="fa-solid fa-arrow-trend-up"></i> +18% MoM</span>
+                </div>
+                <div class="card glass-card b2b-card">
+                    <div class="b2b-icon"><i class="fa-solid fa-graduation-cap text-accent"></i></div>
+                    <span class="b2b-title">FCA Audit Verified Learners</span>
+                    <strong class="b2b-val">89.4%</strong>
+                    <span class="b2b-sub text-purple">Consumer Duty Compliant</span>
+                </div>
+                <div class="card glass-card b2b-card">
+                    <div class="b2b-icon"><i class="fa-solid fa-triangle-exclamation text-orange"></i></div>
+                    <span class="b2b-title">Scam Attacks Prevented</span>
+                    <strong class="b2b-val">12,410</strong>
+                    <span class="b2b-sub text-green">Est. £1.8M saved</span>
+                </div>
+                <div class="card glass-card b2b-card">
+                    <div class="b2b-icon"><i class="fa-solid fa-piggy-bank text-green"></i></div>
+                    <span class="b2b-title">First ISA Openings</span>
+                    <strong class="b2b-val">6,240</strong>
+                    <span class="b2b-sub text-accent">Partner Lead Conversion</span>
+                </div>
+            </div>
+
+            <div class="card glass-card mt-4">
+                <h3><i class="fa-solid fa-file-contract text-purple"></i> Why Banks & Employers Pay For FinPulse AI</h3>
+                <div class="grid-2col b2b-benefits">
+                    <div class="benefit-item">
+                        <h4><i class="fa-solid fa-gavel text-gold"></i> FCA Consumer Duty Mandate</h4>
+                        <p>Under the UK FCA's Consumer Duty rules (effective 2023/2024), banks are legally required to ensure customers understand financial risks. FinPulse AI provides verifiable audit logs of customer financial literacy.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4><i class="fa-solid fa-briefcase text-accent"></i> Employer Gen Z Wellbeing</h4>
+                        <p>Companies like Deloitte, KPMG, and NatWest offer FinPulse AI to graduates and apprentices to reduce money stress and increase workplace retention.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+        <p>Built for the <strong>Work in Fintech AI Summit & AI Hackathon 2026</strong> • NatWest Conference Centre, London</p>
+        <p class="disclaimer">Educational simulation tool. Not regulated financial advice. Designed for young investors & capability building.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
