@@ -14,6 +14,7 @@ fcaSync.startScheduledFcaSync();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(__dirname));
 
 // Health Check Endpoint
 app.get('/api/v1/health', (req, res) => {
