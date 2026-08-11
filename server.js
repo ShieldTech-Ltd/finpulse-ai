@@ -1,39 +1,42 @@
 const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const db = require('./db');
-const fcaSync = require('./fcaSync');
 const ocrParser = require('./ocrParser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Start Scheduled FCA Warning List Sync Microservice
-fcaSync.startScheduledFcaSync();
-
 const path = require('path');
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, 'public')));
+app.disable('x-powered-by');
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+app.use(express.json({ limit: '32kb' }));
+app.use('/api/', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
+
+const publicFiles = new Set(['app.js', 'style.css', 'sw.js', 'manifest.json', 'animated_architecture.svg', 'pure_readme_transparent_architecture.svg']);
+const requireAdmin = (req, res, next) => {
+    const expected = process.env.ADMIN_API_TOKEN;
+    const supplied = req.get('authorization');
+    if (!expected || supplied !== `Bearer ${expected}`) return res.status(404).json({ error: 'Not found' });
+    return next();
+};
+const numberInRange = (value, min, max) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed >= min && parsed <= max ? parsed : null;
+};
 
 // Health Check Endpoint
 app.get('/api/v1/health', (req, res) => {
     res.json({
         status: "ONLINE",
-        service: "FinPulse AI Enterprise API Engine",
-        version: "1.0.0-PROD",
+        service: "FinPulse AI educational demo API",
+        version: "1.1.0",
+        mode: "educational-demo",
         uptimeSeconds: Math.floor(process.uptime()),
         timestamp: new Date().toISOString()
     });
-});
-
-// On-Demand FCA Warning List Sync Endpoint
-app.get('/api/v1/fca/sync', async (req, res) => {
-    const result = await fcaSync.syncFcaWarningList();
-    res.json(result);
 });
 
 // Social Video OCR & Transcript Audit Endpoint
@@ -41,6 +44,7 @@ app.post('/api/v1/scan/ocr', (req, res) => {
     const { videoUrl, imageBase64, rawCaption, platform } = req.body;
     const ocrResult = ocrParser.parseSocialVideoText({ videoUrl, imageBase64, rawCaption });
     
+    if (!ocrResult.extractedText) return res.status(400).json({ error: 'rawCaption is required; image/video OCR is not enabled.' });
     const textToScan = ocrResult.extractedText.toLowerCase();
     const fcaMatch = db.checkFcaWarning(textToScan);
     
@@ -75,11 +79,14 @@ app.post('/api/v1/scan/ocr', (req, res) => {
         auditId: auditLog.id,
         ocrExtractedText: ocrResult.extractedText,
         confidenceScore: ocrResult.confidenceScore,
+        source: ocrResult.source,
+        notice: ocrResult.notice,
         scorecard: {
             scamScore,
             riskLevel,
             flags,
-            fcaStatus: fcaMatch ? "WARNING_UNAUTHORISED_FIRM" : "NO_EXPLICIT_FCA_WARNING"
+            fcaStatus: fcaMatch ? "WARNING_UNAUTHORISED_FIRM" : "NOT_CHECKED_USE_OFFICIAL_FCA_WARNING_LIST",
+            fcaWarningListUrl: "https://www.fca.org.uk/consumers/warning-list-unauthorised-firms"
         }
     });
 });
@@ -88,6 +95,7 @@ app.post('/api/v1/scan/ocr', (req, res) => {
 app.post('/api/v1/scan', (req, res) => {
     const { platform, claimUrl, claimText } = req.body;
     const textToScan = (claimText || claimUrl || "").toLowerCase();
+    if (textToScan.trim().length < 3 || textToScan.length > 5000) return res.status(400).json({ error: 'Provide claim text between 3 and 5,000 characters.' });
 
     // Check FCA Warning Database
     const fcaMatch = db.checkFcaWarning(textToScan);
@@ -148,18 +156,20 @@ app.post('/api/v1/scan', (req, res) => {
             riskLevel,
             flags,
             mathReality,
-            fcaStatus: fcaMatch ? "WARNING_UNAUTHORISED_FIRM" : "NO_EXPLICIT_FCA_WARNING",
+            fcaStatus: fcaMatch ? "WARNING_UNAUTHORISED_FIRM" : "NOT_CHECKED_USE_OFFICIAL_FCA_WARNING_LIST",
+            fcaWarningListUrl: "https://www.fca.org.uk/consumers/warning-list-unauthorised-firms",
             fcaDetails: fcaMatch || null
         }
     });
 });
 
-// 2. REAL UK HMRC TAX & PAYSLIP ENGINE API
+// 2. SIMPLIFIED UK PAYSLIP EDUCATION API
 app.post('/api/v1/payslip/decode', (req, res) => {
-    const grossSalary = parseFloat(req.body.grossSalary) || 30000;
+    const grossSalary = numberInRange(req.body.grossSalary, 0, 1_000_000);
     const taxCode = req.body.taxCode || "1257L";
     const studentLoanPlan = req.body.studentLoanPlan || "plan2";
-    const pensionRate = parseFloat(req.body.pensionRate) || 5;
+    const pensionRate = numberInRange(req.body.pensionRate, 0, 100);
+    if (grossSalary === null || pensionRate === null) return res.status(400).json({ error: 'grossSalary must be 0-1,000,000 and pensionRate must be 0-100.' });
 
     // UK 2026/2027 HMRC Tax Computation Engine Rules
     let personalAllowance = 12570;
@@ -225,15 +235,17 @@ app.post('/api/v1/payslip/decode', (req, res) => {
             freeEmployerPensionMatchMonthly: Math.round(annualEmployerMatch / 12),
             netTakeHomeMonthly: Math.round(monthlyNetPay),
             netTakeHomeAnnual: Math.round(annualNetPay)
-        }
+        },
+        assumptions: 'Simplified England, Wales and Northern Ireland educational estimate. Verify current HMRC rules before making decisions.'
     });
 });
 
 // 3. INVESTOR VS GAMBLER ANNUITY & CRASH SIMULATOR API
 app.post('/api/v1/sandbox/simulate', (req, res) => {
-    const monthlyContribution = parseFloat(req.body.monthlyContribution) || 100;
+    const monthlyContribution = numberInRange(req.body.monthlyContribution, 0, 100_000);
     const strategy = req.body.strategy || "global-etf"; // 'global-etf' | 'meme-crypto' | 'forex-leverage'
     const simulateCrash = req.body.simulateCrash === true;
+    if (monthlyContribution === null || !['global-etf', 'meme-crypto', 'forex-leverage'].includes(strategy)) return res.status(400).json({ error: 'Invalid contribution or strategy.' });
 
     const years = 5;
     const trajectory = [];
@@ -294,7 +306,7 @@ app.post('/api/v1/sandbox/simulate', (req, res) => {
 });
 
 // 4. B2B FCA CONSUMER DUTY COMPLIANCE TELEMETRY API
-app.get('/api/v1/b2b/telemetry', (req, res) => {
+app.get('/api/v1/b2b/telemetry', requireAdmin, (req, res) => {
     const metrics = db.getB2bMetrics();
     const recentLogs = db.getAuditLogs(15);
 
@@ -304,14 +316,14 @@ app.get('/api/v1/b2b/telemetry', (req, res) => {
         metrics: {
             ...metrics,
             totalAuditLogsStored: recentLogs.length,
-            systemStatus: "FCA_COMPLIANT_ACTIVE"
+            systemStatus: "DEMO_NOT_COMPLIANCE_EVIDENCE"
         },
         recentAuditLogs: recentLogs
     });
 });
 
 // B2B FCA Consumer Duty Telemetry CSV / JSON Audit Exporter Endpoint
-app.get('/api/v1/b2b/export', (req, res) => {
+app.get('/api/v1/b2b/export', requireAdmin, (req, res) => {
     const format = (req.query.format || 'json').toLowerCase();
     const logs = db.getAuditLogs(100);
 
@@ -330,7 +342,7 @@ app.get('/api/v1/b2b/export', (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename="FCA_Consumer_Duty_Audit_Telemetry_FinPulse.json"');
     return res.json({
         exportTimestamp: new Date().toISOString(),
-        fcaFramework: "UK FCA FG22/5 Consumer Duty Compliance Audit Vault",
+        evidenceType: "DEMO_EDUCATIONAL_EVENTS_NOT_COMPLIANCE_EVIDENCE",
         totalExportedLogs: logs.length,
         auditLogs: logs
     });
@@ -338,22 +350,32 @@ app.get('/api/v1/b2b/export', (req, res) => {
 
 // Partner ISA Lead Referral Bounty Endpoint
 app.post('/api/v1/isa/referral', (req, res) => {
-    const credentialToken = `FINPULSE-ISA-${Date.now()}`;
-    const bountyGbp = 45.00;
+    const credentialToken = `FINPULSE-DEMO-${Date.now()}`;
+    const bountyGbp = 0;
 
     db.saveAuditLog({
         event: "ISA_PARTNER_REFERRAL",
         credentialToken,
         bountyGbp,
-        fcaFramework: "FG22/5 Verified Learner"
+        evidenceType: "DEMO_LEARNING_COMPLETION"
     });
 
     return res.json({
         success: true,
         credentialToken,
         bountyGbp,
-        message: "Verified financial capability credential generated for partner ISA lead onboarding."
+        message: "Demo credential generated. This is not an offer, regulated referral, or proof of financial capability."
     });
+});
+
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/:file', (req, res, next) => publicFiles.has(req.params.file) ? res.sendFile(path.join(__dirname, req.params.file)) : next());
+app.use('/public', express.static(path.join(__dirname, 'public'), { dotfiles: 'deny', index: false }));
+app.use((req, res) => res.status(404).json({ error: 'Not found' }));
+app.use((error, req, res, next) => {
+    console.error(error.message);
+    if (res.headersSent) return next(error);
+    return res.status(502).json({ error: 'Upstream service unavailable' });
 });
 
 // Export App for Vercel / Serverless Functions

@@ -274,27 +274,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('metric-monetization').innerText = sc.fcaStatus;
 
         const flagsContainer = document.getElementById('flags-container');
-        if (flagsContainer) {
-            flagsContainer.innerHTML = '';
-            if (sc.flags && sc.flags.length > 0) {
-                sc.flags.forEach(flag => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fire"></i> ${flag}`;
-                    flagsContainer.appendChild(li);
-                });
-            } else {
+        flagsContainer.innerHTML = '';
+
+        if (sc.flags && sc.flags.length > 0) {
+            sc.flags.forEach(flag => {
                 const li = document.createElement('li');
-                li.innerHTML = `<i class="fa-solid fa-circle-check text-green"></i> No high-risk leverage flags detected.`;
+                li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fire"></i> ${flag}`;
                 flagsContainer.appendChild(li);
-            }
+            });
+        } else {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-circle-check text-green"></i> No high-risk leverage flags detected.`;
+            flagsContainer.appendChild(li);
         }
 
-        if (document.getElementById('reality-box-text')) {
-            document.getElementById('reality-box-text').innerText = sc.mathReality;
-        }
-        if (document.getElementById('verdict-text')) {
-            document.getElementById('verdict-text').innerText = `[API AUDIT LOG ${auditId}] FCA Status: ${sc.fcaStatus}. Evaluated by FinPulse AI REST Server.`;
-        }
+        document.getElementById('reality-box-text').innerText = sc.mathReality;
+        document.getElementById('verdict-text').innerText = `[API AUDIT LOG ${auditId}] FCA Status: ${sc.fcaStatus}. Evaluated by FinPulse AI REST Server.`;
     }
 
     function runBSScan(data) {
@@ -303,21 +298,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('metric-monetization').innerText = data.monetization;
 
         const flagsContainer = document.getElementById('flags-container');
-        if (flagsContainer) {
-            flagsContainer.innerHTML = '';
-            data.flags.forEach(flag => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fire"></i> ${flag}`;
-                flagsContainer.appendChild(li);
-            });
-        }
+        flagsContainer.innerHTML = '';
+        data.flags.forEach(flag => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fire"></i> ${flag}`;
+            flagsContainer.appendChild(li);
+        });
 
-        if (document.getElementById('reality-box-text')) {
-            document.getElementById('reality-box-text').innerText = data.reality;
-        }
-        if (document.getElementById('verdict-text')) {
-            document.getElementById('verdict-text').innerText = data.verdict;
-        }
+        document.getElementById('reality-box-text').innerText = data.reality;
+        document.getElementById('verdict-text').innerText = data.verdict;
     }
 
     // --- 3. UK Payslip Decoder Engine (HMRC API Connected) ---
@@ -371,13 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPayslipResults(s) {
-        if (document.getElementById('ps-gross')) document.getElementById('ps-gross').innerText = `£${s.grossSalaryMonthly.toLocaleString()}`;
-        if (document.getElementById('ps-tax')) document.getElementById('ps-tax').innerText = `-£${s.payeTaxMonthly.toLocaleString()}`;
-        if (document.getElementById('ps-ni')) document.getElementById('ps-ni').innerText = `-£${s.nationalInsuranceMonthly.toLocaleString()}`;
-        if (document.getElementById('ps-student-loan')) document.getElementById('ps-student-loan').innerText = `-£${s.studentLoanMonthly.toLocaleString()}`;
-        if (document.getElementById('ps-pension')) document.getElementById('ps-pension').innerText = `-£${s.employeePensionMonthly.toLocaleString()}`;
-        if (document.getElementById('ps-total-deductions')) document.getElementById('ps-total-deductions').innerText = `£${(s.payeTaxMonthly + s.nationalInsuranceMonthly + s.employeePensionMonthly + s.studentLoanMonthly).toLocaleString()}`;
-        if (document.getElementById('ps-net-pay')) document.getElementById('ps-net-pay').innerText = `£${s.netTakeHomeMonthly.toLocaleString()}`;
+        document.getElementById('pay-gross').innerText = `£${s.grossSalaryMonthly.toLocaleString()}`;
+        document.getElementById('pay-tax').innerText = `-£${s.payeTaxMonthly.toLocaleString()}`;
+        document.getElementById('pay-ni').innerText = `-£${s.nationalInsuranceMonthly.toLocaleString()}`;
+        document.getElementById('pay-student').innerText = `-£${s.studentLoanMonthly.toLocaleString()}`;
+        document.getElementById('pay-pension').innerText = `-£${s.employeePensionMonthly.toLocaleString()}`;
+        document.getElementById('pay-match').innerText = `+£${s.freeEmployerPensionMatchMonthly.toLocaleString()}`;
+        document.getElementById('pay-net').innerText = `£${s.netTakeHomeMonthly.toLocaleString()}`;
+        
+        if (document.getElementById('annual-net-summary')) {
+            document.getElementById('annual-net-summary').innerText = `Annual Net Take-Home Pay: £${s.netTakeHomeAnnual.toLocaleString()}`;
+        }
     }
 
     function updatePayslipFallback() {
@@ -503,16 +496,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
 
         // Summary Text
-        if (document.getElementById('sum-invested')) {
-            document.getElementById('sum-invested').innerText = `£${totalDep.toLocaleString()}`;
+        if (document.getElementById('sim-5yr-val')) {
+            document.getElementById('sim-5yr-val').innerText = `£${finalVal.toLocaleString()}`;
         }
-        if (document.getElementById('sum-projected')) {
-            document.getElementById('sum-projected').innerText = `£${finalVal.toLocaleString()}`;
-        }
-        if (document.getElementById('sum-gain')) {
-            const gain = finalVal - totalDep;
-            const pct = ((gain / totalDep) * 100).toFixed(1);
-            document.getElementById('sum-gain').innerText = `${gain >= 0 ? '+' : ''}£${gain.toLocaleString()} (${pct}%)`;
+        if (document.getElementById('sim-5yr-deposited')) {
+            document.getElementById('sim-5yr-deposited').innerText = `£${totalDep.toLocaleString()}`;
         }
     }
 
@@ -525,6 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. B2B Telemetry Loader ---
     function loadB2bTelemetry() {
+        return; // Protected partner API is not called from the public demo.
         fetch(`${API_BASE_URL}/b2b/telemetry`)
             .then(res => res.json())
             .then(data => {
@@ -561,9 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quizFeedback.classList.remove('hidden');
             if (isCorrect) {
                 appState.xp += 150;
-                if (document.getElementById('xp-count')) {
-                    document.getElementById('xp-count').innerText = `${appState.xp.toLocaleString()} XP`;
-                }
+                document.getElementById('xp-count').innerText = `${appState.xp.toLocaleString()} XP`;
             }
         });
     });
@@ -649,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     if (data.success && isaClaimStatus) {
                         isaClaimStatus.classList.remove('hidden');
-                        isaClaimStatus.innerText = `✅ Credential Token ${data.credentialToken} Verified! £${data.bountyGbp} Partner Cashback Bonus Unlocked +300 XP!`;
+                        isaClaimStatus.innerText = `✅ Demo learning token ${data.credentialToken} created. No financial product or cashback has been offered. +300 XP!`;
                         appState.xp += 300;
                         if (document.getElementById('xp-count')) {
                             document.getElementById('xp-count').innerText = `${appState.xp.toLocaleString()} XP`;
@@ -659,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(() => {
                     if (isaClaimStatus) {
                         isaClaimStatus.classList.remove('hidden');
-                        isaClaimStatus.innerText = `✅ Credential FINPULSE-ISA-OFFLINE Verified! £45 Partner Bonus Unlocked +300 XP!`;
+                        isaClaimStatus.innerText = `✅ Offline demo lesson completed. No financial product or cashback has been offered. +300 XP!`;
                     }
                 });
         });

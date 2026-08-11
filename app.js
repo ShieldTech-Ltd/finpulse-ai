@@ -513,6 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. B2B Telemetry Loader ---
     function loadB2bTelemetry() {
+        return; // Protected partner API is not called from the public demo.
         fetch(`${API_BASE_URL}/b2b/telemetry`)
             .then(res => res.json())
             .then(data => {
@@ -635,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     if (data.success && isaClaimStatus) {
                         isaClaimStatus.classList.remove('hidden');
-                        isaClaimStatus.innerText = `✅ Credential Token ${data.credentialToken} Verified! £${data.bountyGbp} Partner Cashback Bonus Unlocked +300 XP!`;
+                        isaClaimStatus.innerText = `✅ Demo learning token ${data.credentialToken} created. No financial product or cashback has been offered. +300 XP!`;
                         appState.xp += 300;
                         if (document.getElementById('xp-count')) {
                             document.getElementById('xp-count').innerText = `${appState.xp.toLocaleString()} XP`;
@@ -645,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(() => {
                     if (isaClaimStatus) {
                         isaClaimStatus.classList.remove('hidden');
-                        isaClaimStatus.innerText = `✅ Credential FINPULSE-ISA-OFFLINE Verified! £45 Partner Bonus Unlocked +300 XP!`;
+                        isaClaimStatus.innerText = `✅ Offline demo lesson completed. No financial product or cashback has been offered. +300 XP!`;
                     }
                 });
         });
