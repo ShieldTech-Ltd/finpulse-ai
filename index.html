@@ -54,6 +54,19 @@
 
         <!-- TAB 1: FINFLUENCER BS SCANNER -->
         <section id="bs-detector" class="tab-content active">
+            <!-- ⚡ 1-CLICK STAGE DEMO PRESET BAR -->
+            <div class="stage-demo-bar glass-card mb-4" style="background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3); padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="badge" style="background: #6366f1; color: #fff; padding: 4px 10px; border-radius: 20px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">⚡ 1-Click Stage Demo</span>
+                    <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">Select a live finfluencer preset for instant stage scoring:</span>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary btn-sm preset-btn" data-preset="forex"><i class="fa-brands fa-tiktok text-accent"></i> 50x Forex Scam</button>
+                    <button class="btn btn-secondary btn-sm preset-btn" data-preset="crypto"><i class="fa-brands fa-instagram text-purple"></i> Meme Coin Presale</button>
+                    <button class="btn btn-secondary btn-sm preset-btn" data-preset="bnpl"><i class="fa-solid fa-bolt text-gold"></i> BNPL Debt Trap</button>
+                </div>
+            </div>
+
             <div class="hero-banner">
                 <div class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Multi-Platform Finfluencer Audit Engine</div>
                 <h1>Cut Through <span class="text-gradient">Social Media Money Noise</span></h1>
@@ -475,6 +488,35 @@
                     <div class="benefit-item">
                         <h4><i class="fa-solid fa-briefcase text-accent"></i> Employer Gen Z Wellbeing</h4>
                         <p>Companies like Deloitte, KPMG, and NatWest offer FinPulse AI to graduates and apprentices to reduce money stress and increase workplace retention.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Bank ROI Calculator -->
+            <div class="card glass-card mt-4 b2b-roi-card" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(168, 85, 247, 0.3);">
+                <h3><i class="fa-solid fa-calculator text-purple"></i> Bank FCA Fine Savings &amp; ROI Calculator</h3>
+                <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">Estimate how much your institution saves in FCA Consumer Duty enforcement fines by licensing FinPulse AI.</p>
+                <div class="grid-2col" style="gap: 20px;">
+                    <div>
+                        <label for="bank-users-slider" style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 8px;">
+                            <span>Active Gen Z Account Holders:</span>
+                            <span id="bank-users-val" class="text-accent" style="font-weight: 800;">100,000 Users</span>
+                        </label>
+                        <input type="range" id="bank-users-slider" min="10000" max="500000" step="10000" value="100000" style="width: 100%;">
+                    </div>
+                    <div style="background: rgba(30, 27, 75, 0.5); padding: 16px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2); display: flex; flex-direction: column; justify-content: center;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="color: #94a3b8; font-size: 12px;">Est. FCA Fine Risk Savings:</span>
+                            <strong id="roi-fine-savings" class="text-green" style="font-size: 18px;">£1,420,000</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="color: #94a3b8; font-size: 12px;">FinPulse Annual License:</span>
+                            <strong id="roi-saas-fee" class="text-purple">£75,000/yr</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 6px; margin-top: 4px;">
+                            <span style="font-weight: 700; font-size: 13px;">Net Bank Compliance ROI:</span>
+                            <strong id="roi-multiple" class="text-gold" style="font-size: 16px;">18.9x ROI</strong>
+                        </div>
                     </div>
                 </div>
             </div>

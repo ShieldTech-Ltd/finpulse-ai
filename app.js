@@ -398,9 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeQuizBtn.addEventListener('click', () => {
             quizModal.classList.add('hidden');
         });
-    }
-
-    quizOptBtns.forEach(btn => {
+        quizOptBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const isCorrect = btn.getAttribute('data-correct') === 'true';
             quizFeedback.classList.remove('hidden');
@@ -410,4 +408,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // --- 6. 1-Click Stage Demo Presets & Bank ROI Calculator ---
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const claimInput = document.getElementById('claim-input');
+    const analyzeBtn = document.getElementById('analyze-btn');
+
+    const presetsMap = {
+        forex: "https://www.tiktok.com/@crypto_king_99/video/7391209381 - 'Quit your 9-5! 50x leverage forex signals group guarantees £5,000/week with zero risk. DM me for access link.'",
+        crypto: "https://www.instagram.com/reel/C8x9910aB - '1000x Moonshot Presale Meme Coin! Put in £100 today, guaranteed to hit £100,000 when listed on DEX tomorrow!'",
+        bnpl: "https://twitter.com/bnpl_hacks/status/17892019 - 'How to buy a £1,200 iPhone for free: Stack 4 Klarna accounts with Clearpay and delay payments for 12 months with no credit check!'"
+    };
+
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-preset');
+            if (presetsMap[key] && claimInput) {
+                claimInput.value = presetsMap[key];
+                if (analyzeBtn) analyzeBtn.click();
+            }
+        });
+    });
+
+    // Bank ROI Slider Calculator
+    const bankUsersSlider = document.getElementById('bank-users-slider');
+    const bankUsersVal = document.getElementById('bank-users-val');
+    const roiFineSavings = document.getElementById('roi-fine-savings');
+    const roiSaasFee = document.getElementById('roi-saas-fee');
+    const roiMultiple = document.getElementById('roi-multiple');
+
+    if (bankUsersSlider) {
+        bankUsersSlider.addEventListener('input', () => {
+            const users = parseInt(bankUsersSlider.value);
+            bankUsersVal.innerText = `${users.toLocaleString()} Users`;
+
+            // Est FCA Fine Risk Savings (£14.20 per user)
+            const savings = Math.round(users * 14.2);
+            // SaaS Fee scaling: £25k base + £0.50 per user
+            const saasFee = Math.round(25000 + (users * 0.5));
+            const roiMult = (savings / saasFee).toFixed(1);
+
+            roiFineSavings.innerText = `£${savings.toLocaleString()}`;
+            roiSaasFee.innerText = `£${saasFee.toLocaleString()}/yr`;
+            roiMultiple.innerText = `${roiMult}x ROI`;
+        });
+    }
 });
