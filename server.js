@@ -2,9 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
+const fcaSync = require('./fcaSync');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Start Scheduled FCA Warning List Sync Microservice
+fcaSync.startScheduledFcaSync();
 
 // Middleware
 app.use(cors());
@@ -19,6 +23,12 @@ app.get('/api/v1/health', (req, res) => {
         uptimeSeconds: Math.floor(process.uptime()),
         timestamp: new Date().toISOString()
     });
+});
+
+// On-Demand FCA Warning List Sync Endpoint
+app.get('/api/v1/fca/sync', async (req, res) => {
+    const result = await fcaSync.syncFcaWarningList();
+    res.json(result);
 });
 
 // 1. AI FINFLUENCER AUDIT API
